@@ -1,6 +1,12 @@
 load("@rules_cc//cc:defs.bzl", "cc_library")
 
 cc_library(
+    name = "flag_parser",
+    srcs = ["flag_parser.cc"],
+    hdrs = ["flag_parser.h"],
+)
+
+cc_library(
     name = "pineapple",
     srcs = ["pineapple.cc"],
     hdrs = ["pineapple.h"],
