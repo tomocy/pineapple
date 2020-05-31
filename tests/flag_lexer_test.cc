@@ -1,10 +1,9 @@
-#include "src/flag_parser.h"
+#include "src/flag_lexer.h"
 
 #include <string>
 #include <vector>
 
 #include "external/gtest/googletest/include/gtest/gtest.h"
-#include "src/pineapple.h"
 
 TEST(ReadToken, Empty) {
   auto src = std::string("");

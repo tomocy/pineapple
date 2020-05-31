@@ -10,11 +10,10 @@ cc_test(
 )
 
 cc_test(
-    name = "flag_parser",
-    srcs = ["flag_parser_test.cc"],
+    name = "flag_lexer",
+    srcs = ["flag_lexer_test.cc"],
     deps = [
-        "//src:flag_parser",
-        "//src:pineapple",
+        "//src:flag_lexer",
         "@gtest//:gtest_main",
     ],
 )

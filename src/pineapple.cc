@@ -8,7 +8,7 @@
 #include <tuple>
 #include <vector>
 
-#include "src/flag_parser.h"
+#include "src/flag_lexer.h"
 
 namespace pineapple {
 Flag::Flag(const std::string& name, const std::string& value) noexcept

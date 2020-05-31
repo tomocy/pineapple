@@ -1,9 +1,9 @@
 load("@rules_cc//cc:defs.bzl", "cc_library")
 
 cc_library(
-    name = "flag_parser",
-    srcs = ["flag_parser.cc"],
-    hdrs = ["flag_parser.h"],
+    name = "flag_lexer",
+    srcs = ["flag_lexer.cc"],
+    hdrs = ["flag_lexer.h"],
     visibility = [
         "//tests:__pkg__",
     ],
@@ -18,6 +18,6 @@ cc_library(
         "//tests:__pkg__",
     ],
     deps = [
-        "//src:flag_parser",
+        "//src:flag_lexer",
     ],
 )

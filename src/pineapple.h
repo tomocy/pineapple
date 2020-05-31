@@ -6,7 +6,7 @@
 #include <tuple>
 #include <vector>
 
-#include "src/flag_parser.h"
+#include "src/flag_lexer.h"
 
 namespace pineapple {
 class Flag {
