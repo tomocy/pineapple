@@ -135,15 +135,17 @@ char Lexer::NextChar() const noexcept {
 namespace pineapple {
 Parser::Parser(const Lexer& lexer) noexcept
     : lexer(lexer),
-      token(kTokenEOF),
+      currToken(kTokenEOF),
+      nextToken(kTokenEOF),
       flags(std::vector<StringFlag>()),
       args(std::vector<std::string>()) {
+  ReadToken();
   ReadToken();
 }
 
 void Parser::Parse() noexcept {
   while (true) {
-    switch (token.Kind()) {
+    switch (currToken.Kind()) {
       case TokenKind::END_OF_FILE:
       case TokenKind::UNKNOWN:
         return;
@@ -165,7 +167,18 @@ void Parser::ParseFlag() noexcept {
   ReadToken();
 
   auto name = ParseString();
-  flags.push_back(StringFlag(name, ""));
+
+  if (DoHave(TokenKind::EQUAL)) {
+    ReadToken();
+  }
+
+  if (DoHave(TokenKind::SHORT_HYPHEN) || DoHave(TokenKind::LONG_HYPHEN)) {
+    flags.push_back(StringFlag(name, ""));
+    return;
+  }
+
+  auto value = ParseString();
+  flags.push_back(StringFlag(name, value));
 }
 
 void Parser::ParseArg() noexcept {
@@ -174,12 +187,19 @@ void Parser::ParseArg() noexcept {
 }
 
 std::string Parser::ParseString() noexcept {
-  auto literal = token.Literal();
+  auto literal = currToken.Literal();
 
   ReadToken();
 
   return literal;
 }
 
-void Parser::ReadToken() noexcept { token = lexer.ReadToken(); }
+bool Parser::DoHave(TokenKind kind) const noexcept {
+  return currToken.Kind() == kind;
+}
+
+void Parser::ReadToken() noexcept {
+  currToken = nextToken;
+  nextToken = lexer.ReadToken();
+}
 }  // namespace pineapple

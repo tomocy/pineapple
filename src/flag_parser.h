@@ -92,10 +92,13 @@ class Parser {
 
   std::string ParseString() noexcept;
 
+  bool DoHave(TokenKind kind) const noexcept;
+
   void ReadToken() noexcept;
 
   Lexer lexer;
-  Token token;
+  Token currToken;
+  Token nextToken;
 
   std::vector<StringFlag> flags;
   std::vector<std::string> args;
