@@ -2,21 +2,24 @@
 #define TOMOCY_PINEAPPLE_H
 
 #include <functional>
-#include <map>
 #include <string>
-#include <tuple>
-#include <vector>
 
 namespace pineapple {
+using command_action_t = std::function<void()>;
+
 class Command {
  public:
-  Command(const std::string& name, const std::string& description) noexcept;
+  using action_t = command_action_t;
+
+  Command(const std::string& name, const std::string& description,
+          const action_t& action) noexcept;
 
   std::string Help() const noexcept;
 
  private:
   std::string name;
   std::string description;
+  action_t action;
 };
 }  // namespace pineapple
 #endif
