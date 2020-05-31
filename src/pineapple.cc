@@ -22,6 +22,10 @@ Command::Command(const std::string& name, const std::string& description,
       action(action),
       commands(commands) {}
 
+void Command::Run(const std::vector<std::string>& args) const noexcept {
+  action();
+}
+
 void Command::AddCommand(const Command& cmd) noexcept {
   commands.push_back(cmd);
 }
@@ -29,7 +33,13 @@ void Command::AddCommand(const Command& cmd) noexcept {
 void Command::PrintHelp() const noexcept { std::cout << Help() << std::endl; }
 
 std::string Command::Help() const noexcept {
-  return name + " - " + description + "\n" + CommandsHelp();
+  auto help = name + " - " + description;
+  auto cmdsHelp = CommandsHelp();
+  if (!cmdsHelp.empty()) {
+    help += "\n\n" + cmdsHelp;
+  }
+
+  return help;
 }
 
 std::string Command::CommandsHelp() const noexcept {
@@ -37,12 +47,12 @@ std::string Command::CommandsHelp() const noexcept {
     return "";
   }
 
-  auto help = std::string("\nCommands:\n");
+  auto help = std::string("Commands:\n");
 
   for (auto cmd : commands) {
     help += cmd.name + "    " + cmd.description + "\n";
   }
 
-  return help;
+  return help.erase(help.size() - 1, 1);
 }
 }  // namespace pineapple
