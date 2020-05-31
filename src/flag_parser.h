@@ -6,11 +6,7 @@
 #include <vector>
 
 namespace pineapple {
-enum class TokenKind { END_OF_FILE, UNKNOWN, Hyphen, STRING };
-
-const std::map<std::string, TokenKind> kTokenKinds = {
-    {"-", TokenKind::Hyphen},
-};
+enum class TokenKind { END_OF_FILE, UNKNOWN, SHORT_HYPHEN, STRING };
 }  // namespace pineapple
 
 namespace pineapple {

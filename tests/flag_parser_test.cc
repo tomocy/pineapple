@@ -63,7 +63,7 @@ TEST(ReadToken, SomeStrings) {
 TEST(ReadToken, ShortFlag) {
   auto src = std::string("-d");
   auto expected = std::vector<pineapple::Token>{
-      pineapple::Token(pineapple::TokenKind::Hyphen, "-"),
+      pineapple::Token(pineapple::TokenKind::SHORT_HYPHEN, "-"),
       pineapple::Token(pineapple::TokenKind::STRING, "d"),
       pineapple::kTokenEOF,
   };

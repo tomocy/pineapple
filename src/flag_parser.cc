@@ -26,7 +26,7 @@ Token Lexer::ReadToken() noexcept {
   }
 
   if (curr == '-') {
-    return ComposeSingleTokenAs(kTokenKinds.at(std::string{curr}));
+    return ComposeSingleTokenAs(TokenKind::SHORT_HYPHEN);
   }
 
   if (DoHaveLetter()) {
