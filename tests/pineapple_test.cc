@@ -7,11 +7,219 @@
 
 #include "external/gtest/googletest/include/gtest/gtest.h"
 
-TEST(FlagSet, Parse) {
-  auto flags = pineapple::FlagSet(std::vector<pineapple::Flag>{
-      pineapple::StringFlag("string1", ""),
-  });
+TEST(Parse, Empty) {
+  auto src = std::string("");
+  auto expected = std::vector<pineapple::StringFlag>{};
+
+  auto lex =
+      pineapple::Lexer(std::vector<char>(std::begin(src), std::end(src)));
+  auto parser = pineapple::Parser(lex);
+
+  parser.Parse();
+
+  auto actual = parser.Flags();
+
+  ASSERT_EQ(actual.size(), expected.size());
+
+  for (auto i = 0; i < expected.size(); ++i) {
+    EXPECT_EQ(actual.at(i).Name(), expected.at(i).Name());
+    EXPECT_EQ(actual.at(i).Value(), expected.at(i).Value());
+  }
 }
+
+TEST(Parse, String) {
+  auto src = std::string("d");
+  auto expected = std::vector<std::string>{"d"};
+
+  auto lex =
+      pineapple::Lexer(std::vector<char>(std::begin(src), std::end(src)));
+  auto parser = pineapple::Parser(lex);
+
+  parser.Parse();
+
+  auto actual = parser.Args();
+
+  ASSERT_EQ(actual.size(), expected.size());
+
+  for (auto i = 0; i < expected.size(); ++i) {
+    EXPECT_EQ(actual.at(i), expected.at(i));
+  }
+}
+
+TEST(Parse, ShortFlag) {
+  auto src = std::string("-d");
+  auto expected =
+      std::vector<pineapple::StringFlag>{pineapple::StringFlag("d", "")};
+
+  auto lex =
+      pineapple::Lexer(std::vector<char>(std::begin(src), std::end(src)));
+  auto parser = pineapple::Parser(lex);
+
+  parser.Parse();
+
+  auto actual = parser.Flags();
+
+  ASSERT_EQ(actual.size(), expected.size());
+
+  for (auto i = 0; i < expected.size(); ++i) {
+    EXPECT_EQ(actual.at(i).Name(), expected.at(i).Name());
+    EXPECT_EQ(actual.at(i).Value(), expected.at(i).Value());
+  }
+}
+
+TEST(Parse, ShortFlagWithValue) {
+  auto src = std::string("-d a");
+  auto expected =
+      std::vector<pineapple::StringFlag>{pineapple::StringFlag("d", "a")};
+
+  auto lex =
+      pineapple::Lexer(std::vector<char>(std::begin(src), std::end(src)));
+  auto parser = pineapple::Parser(lex);
+
+  parser.Parse();
+
+  auto actual = parser.Flags();
+
+  ASSERT_EQ(actual.size(), expected.size());
+
+  for (auto i = 0; i < expected.size(); ++i) {
+    EXPECT_EQ(actual.at(i).Name(), expected.at(i).Name());
+    EXPECT_EQ(actual.at(i).Value(), expected.at(i).Value());
+  }
+}
+
+TEST(Parse, ShortFlagWithEqualValue) {
+  auto src = std::string("-d=a");
+  auto expected =
+      std::vector<pineapple::StringFlag>{pineapple::StringFlag("d", "a")};
+
+  auto lex =
+      pineapple::Lexer(std::vector<char>(std::begin(src), std::end(src)));
+  auto parser = pineapple::Parser(lex);
+
+  parser.Parse();
+
+  auto actual = parser.Flags();
+
+  ASSERT_EQ(actual.size(), expected.size());
+
+  for (auto i = 0; i < expected.size(); ++i) {
+    EXPECT_EQ(actual.at(i).Name(), expected.at(i).Name());
+    EXPECT_EQ(actual.at(i).Value(), expected.at(i).Value());
+  }
+}
+
+TEST(Parse, LongFlag) {
+  auto src = std::string("--d");
+  auto expected =
+      std::vector<pineapple::StringFlag>{pineapple::StringFlag("d", "")};
+
+  auto lex =
+      pineapple::Lexer(std::vector<char>(std::begin(src), std::end(src)));
+  auto parser = pineapple::Parser(lex);
+
+  parser.Parse();
+
+  auto actual = parser.Flags();
+
+  ASSERT_EQ(actual.size(), expected.size());
+
+  for (auto i = 0; i < expected.size(); ++i) {
+    EXPECT_EQ(actual.at(i).Name(), expected.at(i).Name());
+    EXPECT_EQ(actual.at(i).Value(), expected.at(i).Value());
+  }
+}
+
+TEST(Parse, LongFlagWithValue) {
+  auto src = std::string("--d a");
+  auto expected =
+      std::vector<pineapple::StringFlag>{pineapple::StringFlag("d", "a")};
+
+  auto lex =
+      pineapple::Lexer(std::vector<char>(std::begin(src), std::end(src)));
+  auto parser = pineapple::Parser(lex);
+
+  parser.Parse();
+
+  auto actual = parser.Flags();
+
+  ASSERT_EQ(actual.size(), expected.size());
+
+  for (auto i = 0; i < expected.size(); ++i) {
+    EXPECT_EQ(actual.at(i).Name(), expected.at(i).Name());
+    EXPECT_EQ(actual.at(i).Value(), expected.at(i).Value());
+  }
+}
+
+TEST(Parse, LongFlagWithEqualValue) {
+  auto src = std::string("--d=a");
+  auto expected =
+      std::vector<pineapple::StringFlag>{pineapple::StringFlag("d", "a")};
+
+  auto lex =
+      pineapple::Lexer(std::vector<char>(std::begin(src), std::end(src)));
+  auto parser = pineapple::Parser(lex);
+
+  parser.Parse();
+
+  auto actual = parser.Flags();
+
+  ASSERT_EQ(actual.size(), expected.size());
+
+  for (auto i = 0; i < expected.size(); ++i) {
+    EXPECT_EQ(actual.at(i).Name(), expected.at(i).Name());
+    EXPECT_EQ(actual.at(i).Value(), expected.at(i).Value());
+  }
+}
+
+TEST(Parse, Real) {
+  auto src = std::string("--a aiueo --b -c=ccc x y z");
+  auto expected_flags = std::vector<pineapple::StringFlag>{
+      pineapple::StringFlag("a", "aiueo"), pineapple::StringFlag("b", ""),
+      pineapple::StringFlag("c", "ccc")};
+  auto expected_args = std::vector<std::string>{"x", "y", "z"};
+
+  auto lex =
+      pineapple::Lexer(std::vector<char>(std::begin(src), std::end(src)));
+  auto parser = pineapple::Parser(lex);
+
+  parser.Parse();
+
+  auto actual_flags = parser.Flags();
+
+  ASSERT_EQ(actual_flags.size(), expected_flags.size());
+
+  for (auto i = 0; i < expected_flags.size(); ++i) {
+    EXPECT_EQ(actual_flags.at(i).Name(), expected_flags.at(i).Name());
+    EXPECT_EQ(actual_flags.at(i).Value(), expected_flags.at(i).Value());
+  }
+
+  auto actual_args = parser.Args();
+
+  ASSERT_EQ(actual_args.size(), expected_args.size());
+
+  for (auto i = 0; i < expected_args.size(); ++i) {
+    EXPECT_EQ(actual_args.at(i), expected_args.at(i));
+  }
+}
+
+// TEST(FlagSet, Parse) {
+//   auto src =
+//       std::vector<std::string>{"--a", "aiueo", "--b", "-c=ccc", "x", "y",
+//       "z"};
+//   auto expected_args = std::vector<std::string>{"x", "y", "z"};
+
+//   auto flags = pineapple::FlagSet(std::vector<pineapple::Flag>());
+//   flags.Parse(src);
+
+//   auto actual_args = flags.Args();
+
+//   ASSERT_EQ(actual_args.size(), expected_args.size());
+
+//   for (auto i = 0; i < expected_args.size(); ++i) {
+//     EXPECT_EQ(actual_args.at(i), expected_args.at(i));
+//   }
+// }
 
 TEST(Command, Run) {
   auto s = std::string("");

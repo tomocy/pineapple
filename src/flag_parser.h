@@ -6,7 +6,6 @@
 #include <vector>
 
 #include "src/flag_parser.h"
-#include "src/pineapple.h"
 
 namespace pineapple {
 enum class TokenKind {
@@ -73,37 +72,6 @@ class Lexer {
 };
 
 const char kCharEOF = 0;
-}  // namespace pineapple
-
-namespace pineapple {
-class Parser {
- public:
-  Parser(const Lexer& lexer) noexcept;
-
-  void Parse() noexcept;
-
-  const std::vector<StringFlag>& Flags() const noexcept;
-
-  const std::vector<std::string>& Args() const noexcept;
-
- private:
-  void ParseFlag() noexcept;
-
-  void ParseArg() noexcept;
-
-  std::string ParseString() noexcept;
-
-  bool DoHave(TokenKind kind) const noexcept;
-
-  void ReadToken() noexcept;
-
-  Lexer lexer;
-  Token currToken;
-  Token nextToken;
-
-  std::vector<StringFlag> flags;
-  std::vector<std::string> args;
-};
 }  // namespace pineapple
 
 #endif

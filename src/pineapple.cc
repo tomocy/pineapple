@@ -2,9 +2,13 @@
 
 #include <functional>
 #include <iostream>
+#include <iterator>
+#include <sstream>
 #include <string>
 #include <tuple>
 #include <vector>
+
+#include "src/flag_parser.h"
 
 namespace pineapple {
 StringFlag::StringFlag(const std::string& name,
@@ -17,7 +21,108 @@ const std::string& StringFlag::Value() const noexcept { return value; }
 }  // namespace pineapple
 
 namespace pineapple {
+Parser::Parser(const Lexer& lexer) noexcept
+    : lexer(lexer),
+      currToken(kTokenEOF),
+      nextToken(kTokenEOF),
+      flags(std::vector<StringFlag>()),
+      args(std::vector<std::string>()) {
+  ReadToken();
+  ReadToken();
+}
+
+void Parser::Parse() noexcept {
+  while (true) {
+    switch (currToken.Kind()) {
+      case TokenKind::END_OF_FILE:
+      case TokenKind::UNKNOWN:
+        return;
+      case TokenKind::SHORT_HYPHEN:
+      case TokenKind::LONG_HYPHEN:
+        ParseFlag();
+        break;
+      case TokenKind::STRING:
+        ParseArg();
+        break;
+      default:
+        ReadToken();
+    }
+  }
+}
+
+const std::vector<StringFlag>& Parser::Flags() const noexcept { return flags; }
+
+const std::vector<std::string>& Parser::Args() const noexcept { return args; }
+
+void Parser::ParseFlag() noexcept {
+  ReadToken();
+
+  auto name = ParseString();
+
+  if (DoHave(TokenKind::EQUAL)) {
+    ReadToken();
+  }
+
+  if (DoHave(TokenKind::SHORT_HYPHEN) || DoHave(TokenKind::LONG_HYPHEN)) {
+    flags.push_back(StringFlag(name, ""));
+    return;
+  }
+
+  auto value = ParseString();
+  flags.push_back(StringFlag(name, value));
+}
+
+void Parser::ParseArg() noexcept {
+  auto arg = ParseString();
+  args.push_back(arg);
+}
+
+std::string Parser::ParseString() noexcept {
+  auto literal = currToken.Literal();
+
+  ReadToken();
+
+  return literal;
+}
+
+bool Parser::DoHave(TokenKind kind) const noexcept {
+  return currToken.Kind() == kind;
+}
+
+void Parser::ReadToken() noexcept {
+  currToken = nextToken;
+  nextToken = lexer.ReadToken();
+}
+}  // namespace pineapple
+
+namespace pineapple {
 FlagSet::FlagSet(const std::vector<Flag>& flags) noexcept : flags(flags) {}
+
+void FlagSet::Parse(const std::vector<std::string>& args) noexcept {
+  // auto src = Source(args);
+  // auto lexer = Lexer(src);
+  // auto parser = Parser(lexer);
+
+  // parser.Parse();
+
+  // flags = parser.Flags();
+  // args = parser.Args();
+}
+
+const std::vector<std::string>& FlagSet::Args() const noexcept { return args; }
+
+std::vector<char> FlagSet::Source(const std::vector<std::string>& args) const
+    noexcept {
+  std::ostringstream src_builder;
+  std::copy(std::begin(args), std::end(args),
+            std::ostream_iterator<std::string>(src_builder, " "));
+
+  auto src = src_builder.str();
+
+  return std::vector<char>(std::begin(src), std::end(src));
+
+  return std::vector<char>(std::begin(src), std::end(src));
+}
 }  // namespace pineapple
 
 namespace pineapple {

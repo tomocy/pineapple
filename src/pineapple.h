@@ -6,6 +6,8 @@
 #include <tuple>
 #include <vector>
 
+#include "src/flag_parser.h"
+
 namespace pineapple {
 class Flag {
  public:
@@ -29,11 +31,48 @@ class StringFlag : public Flag {
 }  // namespace pineapple
 
 namespace pineapple {
+class Parser {
+ public:
+  Parser(const Lexer& lexer) noexcept;
+
+  void Parse() noexcept;
+
+  const std::vector<StringFlag>& Flags() const noexcept;
+
+  const std::vector<std::string>& Args() const noexcept;
+
+ private:
+  void ParseFlag() noexcept;
+
+  void ParseArg() noexcept;
+
+  std::string ParseString() noexcept;
+
+  bool DoHave(TokenKind kind) const noexcept;
+
+  void ReadToken() noexcept;
+
+  Lexer lexer;
+  Token currToken;
+  Token nextToken;
+
+  std::vector<StringFlag> flags;
+  std::vector<std::string> args;
+};
+}  // namespace pineapple
+
+namespace pineapple {
 class FlagSet {
  public:
   FlagSet(const std::vector<Flag>& flags) noexcept;
 
+  void Parse(const std::vector<std::string>& args) noexcept;
+
+  const std::vector<std::string>& Args() const noexcept;
+
  private:
+  std::vector<char> Source(const std::vector<std::string>& args) const noexcept;
+
   std::vector<Flag> flags;
   std::vector<std::string> args;
 };

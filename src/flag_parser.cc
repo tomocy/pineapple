@@ -4,8 +4,6 @@
 #include <string>
 #include <vector>
 
-#include "src/pineapple.h"
-
 namespace pineapple {
 Token::Token(TokenKind kind, const std::string& literal) noexcept
     : kind(kind), literal(literal) {}
@@ -129,78 +127,5 @@ char Lexer::NextChar() const noexcept {
   }
 
   return src.at(nextIndex);
-}
-}  // namespace pineapple
-
-namespace pineapple {
-Parser::Parser(const Lexer& lexer) noexcept
-    : lexer(lexer),
-      currToken(kTokenEOF),
-      nextToken(kTokenEOF),
-      flags(std::vector<StringFlag>()),
-      args(std::vector<std::string>()) {
-  ReadToken();
-  ReadToken();
-}
-
-void Parser::Parse() noexcept {
-  while (true) {
-    switch (currToken.Kind()) {
-      case TokenKind::END_OF_FILE:
-      case TokenKind::UNKNOWN:
-        return;
-      case TokenKind::SHORT_HYPHEN:
-      case TokenKind::LONG_HYPHEN:
-        ParseFlag();
-        break;
-      case TokenKind::STRING:
-        ParseArg();
-        break;
-    }
-  }
-}
-
-const std::vector<StringFlag>& Parser::Flags() const noexcept { return flags; }
-
-const std::vector<std::string>& Parser::Args() const noexcept { return args; }
-
-void Parser::ParseFlag() noexcept {
-  ReadToken();
-
-  auto name = ParseString();
-
-  if (DoHave(TokenKind::EQUAL)) {
-    ReadToken();
-  }
-
-  if (DoHave(TokenKind::SHORT_HYPHEN) || DoHave(TokenKind::LONG_HYPHEN)) {
-    flags.push_back(StringFlag(name, ""));
-    return;
-  }
-
-  auto value = ParseString();
-  flags.push_back(StringFlag(name, value));
-}
-
-void Parser::ParseArg() noexcept {
-  auto arg = ParseString();
-  args.push_back(arg);
-}
-
-std::string Parser::ParseString() noexcept {
-  auto literal = currToken.Literal();
-
-  ReadToken();
-
-  return literal;
-}
-
-bool Parser::DoHave(TokenKind kind) const noexcept {
-  return currToken.Kind() == kind;
-}
-
-void Parser::ReadToken() noexcept {
-  currToken = nextToken;
-  nextToken = lexer.ReadToken();
 }
 }  // namespace pineapple

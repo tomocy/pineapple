@@ -7,9 +7,6 @@ cc_library(
     visibility = [
         "//tests:__pkg__",
     ],
-    deps = [
-        "//src:pineapple",
-    ],
 )
 
 cc_library(
@@ -19,5 +16,8 @@ cc_library(
     visibility = [
         "//example:__pkg__",
         "//tests:__pkg__",
+    ],
+    deps = [
+        "//src:flag_parser",
     ],
 )
