@@ -4,6 +4,9 @@ cc_library(
     name = "flag_parser",
     srcs = ["flag_parser.cc"],
     hdrs = ["flag_parser.h"],
+    visibility = [
+        "//tests:__pkg__",
+    ],
 )
 
 cc_library(
