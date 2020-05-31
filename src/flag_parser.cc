@@ -147,6 +147,9 @@ void Parser::Parse() noexcept {
       case TokenKind::END_OF_FILE:
       case TokenKind::UNKNOWN:
         return;
+      case TokenKind::SHORT_HYPHEN:
+        ParseFlag();
+        break;
       case TokenKind::STRING:
         ParseArg();
         break;
@@ -157,6 +160,13 @@ void Parser::Parse() noexcept {
 const std::vector<StringFlag>& Parser::Flags() const noexcept { return flags; }
 
 const std::vector<std::string>& Parser::Args() const noexcept { return args; }
+
+void Parser::ParseFlag() noexcept {
+  ReadToken();
+
+  auto name = ParseString();
+  flags.push_back(StringFlag(name, ""));
+}
 
 void Parser::ParseArg() noexcept {
   auto arg = ParseString();

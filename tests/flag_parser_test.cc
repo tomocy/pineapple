@@ -241,3 +241,24 @@ TEST(Parse, String) {
     EXPECT_EQ(actual.at(i), expected.at(i));
   }
 }
+
+TEST(Parse, ShortFlag) {
+  auto src = std::string("-d");
+  auto expected =
+      std::vector<pineapple::StringFlag>{pineapple::StringFlag("d", "")};
+
+  auto lex =
+      pineapple::Lexer(std::vector<char>(std::begin(src), std::end(src)));
+  auto parser = pineapple::Parser(lex);
+
+  parser.Parse();
+
+  auto actual = parser.Flags();
+
+  ASSERT_EQ(actual.size(), expected.size());
+
+  for (auto i = 0; i < expected.size(); ++i) {
+    EXPECT_EQ(actual.at(i).Name(), expected.at(i).Name());
+    EXPECT_EQ(actual.at(i).Value(), expected.at(i).Value());
+  }
+}
