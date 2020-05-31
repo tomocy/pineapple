@@ -133,7 +133,13 @@ char Lexer::NextChar() const noexcept {
 }  // namespace pineapple
 
 namespace pineapple {
-Parser::Parser(const Lexer& lexer) noexcept : lexer(lexer), token(kTokenEOF) {}
+Parser::Parser(const Lexer& lexer) noexcept
+    : lexer(lexer),
+      token(kTokenEOF),
+      flags(std::vector<StringFlag>()),
+      args(std::vector<std::string>()) {
+  ReadToken();
+}
 
 void Parser::Parse() noexcept {
   while (true) {
@@ -141,11 +147,29 @@ void Parser::Parse() noexcept {
       case TokenKind::END_OF_FILE:
       case TokenKind::UNKNOWN:
         return;
+      case TokenKind::STRING:
+        ParseArg();
+        break;
     }
   }
 }
 
-std::vector<StringFlag> Parser::Flags() const noexcept { return flags; }
+const std::vector<StringFlag>& Parser::Flags() const noexcept { return flags; }
+
+const std::vector<std::string>& Parser::Args() const noexcept { return args; }
+
+void Parser::ParseArg() noexcept {
+  auto arg = ParseString();
+  args.push_back(arg);
+}
+
+std::string Parser::ParseString() noexcept {
+  auto literal = token.Literal();
+
+  ReadToken();
+
+  return literal;
+}
 
 void Parser::ReadToken() noexcept { token = lexer.ReadToken(); }
 }  // namespace pineapple

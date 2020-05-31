@@ -222,3 +222,22 @@ TEST(Parse, Empty) {
     EXPECT_EQ(actual.at(i).Value(), expected.at(i).Value());
   }
 }
+
+TEST(Parse, String) {
+  auto src = std::string("d");
+  auto expected = std::vector<std::string>{"d"};
+
+  auto lex =
+      pineapple::Lexer(std::vector<char>(std::begin(src), std::end(src)));
+  auto parser = pineapple::Parser(lex);
+
+  parser.Parse();
+
+  auto actual = parser.Args();
+
+  ASSERT_EQ(actual.size(), expected.size());
+
+  for (auto i = 0; i < expected.size(); ++i) {
+    EXPECT_EQ(actual.at(i), expected.at(i));
+  }
+}

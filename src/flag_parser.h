@@ -81,15 +81,24 @@ class Parser {
 
   void Parse() noexcept;
 
-  std::vector<StringFlag> Flags() const noexcept;
+  const std::vector<StringFlag>& Flags() const noexcept;
+
+  const std::vector<std::string>& Args() const noexcept;
 
  private:
+  void ParseFlag() noexcept;
+
+  void ParseArg() noexcept;
+
+  std::string ParseString() noexcept;
+
   void ReadToken() noexcept;
 
   Lexer lexer;
   Token token;
 
   std::vector<StringFlag> flags;
+  std::vector<std::string> args;
 };
 }  // namespace pineapple
 
