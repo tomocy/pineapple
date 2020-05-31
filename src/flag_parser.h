@@ -5,7 +5,7 @@
 #include <vector>
 
 namespace pineapple {
-enum class TokenKind { END_OF_FILE, UNKNOWN };
+enum class TokenKind { END_OF_FILE, UNKNOWN, STRING };
 }
 
 namespace pineapple {
@@ -34,6 +34,12 @@ class Lexer {
   Token ReadToken() noexcept;
 
  private:
+  bool DoHaveLetter() const noexcept;
+
+  Token ComposeString() noexcept;
+
+  std::string ReadLetters() noexcept;
+
   void ReadChar() noexcept;
 
   char CurrentChar() const noexcept;

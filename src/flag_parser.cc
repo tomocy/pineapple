@@ -21,7 +21,30 @@ Token Lexer::ReadToken() noexcept {
     return kTokenEOF;
   }
 
+  if (DoHaveLetter()) {
+    return ComposeString();
+  }
+
   return kTokenUnknown;
+}
+
+bool Lexer::DoHaveLetter() const noexcept {
+  auto curr = CurrentChar();
+  return ('a' <= curr && curr <= 'z') || ('A' <= curr && curr <= 'Z');
+}
+
+Token Lexer::ComposeString() noexcept {
+  auto literal = ReadLetters();
+  return Token(TokenKind::STRING, literal);
+}
+
+std::string Lexer::ReadLetters() noexcept {
+  auto begin = index;
+  while (DoHaveLetter()) {
+    ReadChar();
+  }
+
+  return std::string(std::begin(src) + begin, std::begin(src) + index);
 }
 
 void Lexer::ReadChar() noexcept {
