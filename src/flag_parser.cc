@@ -33,6 +33,10 @@ Token Lexer::ReadToken() noexcept {
     return ComposeSingleTokenAs(TokenKind::SHORT_HYPHEN);
   }
 
+  if (curr == '=') {
+    return ComposeSingleTokenAs(TokenKind::EQUAL);
+  }
+
   if (DoHaveLetter()) {
     return ComposeString();
   }

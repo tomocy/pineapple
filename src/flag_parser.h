@@ -11,6 +11,7 @@ enum class TokenKind {
   UNKNOWN,
   SHORT_HYPHEN,
   LONG_HYPHEN,
+  EQUAL,
   STRING,
 };
 }  // namespace pineapple

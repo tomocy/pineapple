@@ -78,11 +78,89 @@ TEST(ReadToken, ShortFlag) {
   }
 }
 
+TEST(ReadToken, ShortFlagWithValue) {
+  auto src = std::string("-d a");
+  auto expected = std::vector<pineapple::Token>{
+      pineapple::Token(pineapple::TokenKind::SHORT_HYPHEN, "-"),
+      pineapple::Token(pineapple::TokenKind::STRING, "d"),
+      pineapple::Token(pineapple::TokenKind::STRING, "a"),
+      pineapple::kTokenEOF,
+  };
+
+  auto lex =
+      pineapple::Lexer(std::vector<char>(std::begin(src), std::end(src)));
+
+  for (auto expected : expected) {
+    auto actual = lex.ReadToken();
+    EXPECT_EQ(actual.Kind(), expected.Kind());
+    EXPECT_EQ(actual.Literal(), expected.Literal());
+  }
+}
+
+TEST(ReadToken, ShortFlagWithEqualValue) {
+  auto src = std::string("-d=a");
+  auto expected = std::vector<pineapple::Token>{
+      pineapple::Token(pineapple::TokenKind::SHORT_HYPHEN, "-"),
+      pineapple::Token(pineapple::TokenKind::STRING, "d"),
+      pineapple::Token(pineapple::TokenKind::EQUAL, "="),
+      pineapple::Token(pineapple::TokenKind::STRING, "a"),
+      pineapple::kTokenEOF,
+  };
+
+  auto lex =
+      pineapple::Lexer(std::vector<char>(std::begin(src), std::end(src)));
+
+  for (auto expected : expected) {
+    auto actual = lex.ReadToken();
+    EXPECT_EQ(actual.Kind(), expected.Kind());
+    EXPECT_EQ(actual.Literal(), expected.Literal());
+  }
+}
+
 TEST(ReadToken, LongFlag) {
   auto src = std::string("--d");
   auto expected = std::vector<pineapple::Token>{
       pineapple::Token(pineapple::TokenKind::LONG_HYPHEN, "--"),
       pineapple::Token(pineapple::TokenKind::STRING, "d"),
+      pineapple::kTokenEOF,
+  };
+
+  auto lex =
+      pineapple::Lexer(std::vector<char>(std::begin(src), std::end(src)));
+
+  for (auto expected : expected) {
+    auto actual = lex.ReadToken();
+    EXPECT_EQ(actual.Kind(), expected.Kind());
+    EXPECT_EQ(actual.Literal(), expected.Literal());
+  }
+}
+
+TEST(ReadToken, LongFlagWithValue) {
+  auto src = std::string("--d a");
+  auto expected = std::vector<pineapple::Token>{
+      pineapple::Token(pineapple::TokenKind::LONG_HYPHEN, "--"),
+      pineapple::Token(pineapple::TokenKind::STRING, "d"),
+      pineapple::Token(pineapple::TokenKind::STRING, "a"),
+      pineapple::kTokenEOF,
+  };
+
+  auto lex =
+      pineapple::Lexer(std::vector<char>(std::begin(src), std::end(src)));
+
+  for (auto expected : expected) {
+    auto actual = lex.ReadToken();
+    EXPECT_EQ(actual.Kind(), expected.Kind());
+    EXPECT_EQ(actual.Literal(), expected.Literal());
+  }
+}
+
+TEST(ReadToken, LongFlagWithEqualValue) {
+  auto src = std::string("--d=a");
+  auto expected = std::vector<pineapple::Token>{
+      pineapple::Token(pineapple::TokenKind::LONG_HYPHEN, "--"),
+      pineapple::Token(pineapple::TokenKind::STRING, "d"),
+      pineapple::Token(pineapple::TokenKind::EQUAL, "="),
+      pineapple::Token(pineapple::TokenKind::STRING, "a"),
       pineapple::kTokenEOF,
   };
 
