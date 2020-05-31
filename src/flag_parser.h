@@ -1,12 +1,17 @@
 #ifndef TOMOCY_FLAG_PARSER_H
 #define TOMOCY_FLAG_PARSER_H
 
+#include <map>
 #include <string>
 #include <vector>
 
 namespace pineapple {
-enum class TokenKind { END_OF_FILE, UNKNOWN, STRING };
-}
+enum class TokenKind { END_OF_FILE, UNKNOWN, Hyphen, STRING };
+
+const std::map<std::string, TokenKind> kTokenKinds = {
+    {"-", TokenKind::Hyphen},
+};
+}  // namespace pineapple
 
 namespace pineapple {
 class Token {
@@ -34,11 +39,17 @@ class Lexer {
   Token ReadToken() noexcept;
 
  private:
-  bool DoHaveLetter() const noexcept;
+  Token ComposeSingleTokenAs(TokenKind kind) noexcept;
 
   Token ComposeString() noexcept;
 
   std::string ReadLetters() noexcept;
+
+  bool DoHaveLetter() const noexcept;
+
+  void SkipWhitespaces() noexcept;
+
+  bool DoHaveWhitespace() const noexcept;
 
   void ReadChar() noexcept;
 
