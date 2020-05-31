@@ -173,3 +173,31 @@ TEST(ReadToken, LongFlagWithEqualValue) {
     EXPECT_EQ(actual.Literal(), expected.Literal());
   }
 }
+
+TEST(ReadToken, Real) {
+  auto src = std::string("--a aiueo --b -c=ccc x y z");
+  auto expected = std::vector<pineapple::Token>{
+      pineapple::Token(pineapple::TokenKind::LONG_HYPHEN, "--"),
+      pineapple::Token(pineapple::TokenKind::STRING, "a"),
+      pineapple::Token(pineapple::TokenKind::STRING, "aiueo"),
+      pineapple::Token(pineapple::TokenKind::LONG_HYPHEN, "--"),
+      pineapple::Token(pineapple::TokenKind::STRING, "b"),
+      pineapple::Token(pineapple::TokenKind::SHORT_HYPHEN, "-"),
+      pineapple::Token(pineapple::TokenKind::STRING, "c"),
+      pineapple::Token(pineapple::TokenKind::EQUAL, "="),
+      pineapple::Token(pineapple::TokenKind::STRING, "ccc"),
+      pineapple::Token(pineapple::TokenKind::STRING, "x"),
+      pineapple::Token(pineapple::TokenKind::STRING, "y"),
+      pineapple::Token(pineapple::TokenKind::STRING, "z"),
+      pineapple::kTokenEOF,
+  };
+
+  auto lex =
+      pineapple::Lexer(std::vector<char>(std::begin(src), std::end(src)));
+
+  for (auto expected : expected) {
+    auto actual = lex.ReadToken();
+    EXPECT_EQ(actual.Kind(), expected.Kind());
+    EXPECT_EQ(actual.Literal(), expected.Literal());
+  }
+}
