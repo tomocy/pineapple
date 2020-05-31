@@ -5,6 +5,7 @@ cc_library(
     srcs = ["pineapple.cc"],
     hdrs = ["pineapple.h"],
     visibility = [
+        "//example:__pkg__",
         "//tests:__pkg__",
     ],
 )
