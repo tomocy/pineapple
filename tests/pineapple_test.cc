@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <sstream>
+#include <string>
 #include <vector>
 
 #include "external/gtest/googletest/include/gtest/gtest.h"
@@ -12,6 +13,5 @@ TEST(Command, Help) {
   EXPECT_EQ(app.Help(), R"(test - a cli
 
 Commands:
-sub1    a subcommand
-)");
+sub1    a subcommand)");
 }
