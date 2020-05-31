@@ -7,6 +7,6 @@
 #include "external/gtest/googletest/include/gtest/gtest.h"
 
 TEST(Command, Help) {
-  auto app = pineapple::Command("test");
-  EXPECT_EQ(app.Help(), R"(test)");
+  auto app = pineapple::Command("test", "a cli");
+  EXPECT_EQ(app.Help(), R"(test - a cli)");
 }

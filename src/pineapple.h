@@ -10,12 +10,13 @@
 namespace pineapple {
 class Command {
  public:
-  Command(const std::string& name) noexcept;
+  Command(const std::string& name, const std::string& description) noexcept;
 
   std::string Help() const noexcept;
 
  private:
   std::string name;
+  std::string description;
 };
 }  // namespace pineapple
 #endif
