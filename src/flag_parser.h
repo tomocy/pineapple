@@ -72,4 +72,14 @@ class Lexer {
 const char kCharEOF = 0;
 }  // namespace pineapple
 
+namespace pineapple {
+class Parser {
+ public:
+  Parser(const Lexer& lexer) noexcept;
+
+ private:
+  Lexer lexer;
+};
+}  // namespace pineapple
+
 #endif

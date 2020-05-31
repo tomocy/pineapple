@@ -129,3 +129,7 @@ char Lexer::NextChar() const noexcept {
   return src.at(nextIndex);
 }
 }  // namespace pineapple
+
+namespace pineapple {
+Parser::Parser(const Lexer& lexer) noexcept : lexer(lexer) {}
+}  // namespace pineapple
