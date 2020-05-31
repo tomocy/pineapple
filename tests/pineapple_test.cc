@@ -7,6 +7,12 @@
 
 #include "external/gtest/googletest/include/gtest/gtest.h"
 
+TEST(FlagSet, Parse) {
+  auto flags = pineapple::FlagSet(std::vector<pineapple::Flag>{
+      pineapple::StringFlag("string1", ""),
+  });
+}
+
 TEST(Command, Run) {
   auto s = std::string("");
 

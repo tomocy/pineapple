@@ -7,6 +7,16 @@
 #include <vector>
 
 namespace pineapple {
+StringFlag::StringFlag(const std::string& name,
+                       const std::string& value) noexcept
+    : name(name), value(value) {}
+}  // namespace pineapple
+
+namespace pineapple {
+FlagSet::FlagSet(const std::vector<Flag>& flags) noexcept : flags(flags) {}
+}  // namespace pineapple
+
+namespace pineapple {
 Command::Command(const std::string& name,
                  const std::string& description) noexcept
     : Command(name, description, [this](auto _) { this->PrintHelp(); }) {}

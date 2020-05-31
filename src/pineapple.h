@@ -7,6 +7,35 @@
 #include <vector>
 
 namespace pineapple {
+class Flag {
+ public:
+  virtual ~Flag() {}
+};
+}  // namespace pineapple
+
+namespace pineapple {
+class StringFlag : public Flag {
+ public:
+  StringFlag(const std::string& name, const std::string& value) noexcept;
+
+ private:
+  std::string name;
+  std::string value;
+};
+}  // namespace pineapple
+
+namespace pineapple {
+class FlagSet {
+ public:
+  FlagSet(const std::vector<Flag>& flags) noexcept;
+
+ private:
+  std::vector<Flag> flags;
+  std::vector<std::string> args;
+};
+}  // namespace pineapple
+
+namespace pineapple {
 class Command {
  public:
   using action_t = std::function<void(const std::vector<std::string>& args)>;
