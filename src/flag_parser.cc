@@ -4,6 +4,8 @@
 #include <string>
 #include <vector>
 
+#include "src/pineapple.h"
+
 namespace pineapple {
 Token::Token(TokenKind kind, const std::string& literal) noexcept
     : kind(kind), literal(literal) {}
@@ -142,6 +144,8 @@ void Parser::Parse() noexcept {
     }
   }
 }
+
+std::vector<StringFlag> Parser::Flags() const noexcept { return flags; }
 
 void Parser::ReadToken() noexcept { token = lexer.ReadToken(); }
 }  // namespace pineapple

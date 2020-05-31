@@ -7,6 +7,9 @@ cc_library(
     visibility = [
         "//tests:__pkg__",
     ],
+    deps = [
+        "//src:pineapple",
+    ],
 )
 
 cc_library(

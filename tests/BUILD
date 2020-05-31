@@ -14,6 +14,7 @@ cc_test(
     srcs = ["flag_parser_test.cc"],
     deps = [
         "//src:flag_parser",
+        "//src:pineapple",
         "@gtest//:gtest_main",
     ],
 )

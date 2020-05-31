@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "external/gtest/googletest/include/gtest/gtest.h"
+#include "src/pineapple.h"
 
 TEST(ReadToken, Empty) {
   auto src = std::string("");
@@ -204,9 +205,20 @@ TEST(ReadToken, Real) {
 
 TEST(Parse, Empty) {
   auto src = std::string("");
+  auto expected = std::vector<pineapple::StringFlag>{};
+
   auto lex =
       pineapple::Lexer(std::vector<char>(std::begin(src), std::end(src)));
   auto parser = pineapple::Parser(lex);
 
   parser.Parse();
+
+  auto actual = parser.Flags();
+
+  ASSERT_EQ(actual.size(), expected.size());
+
+  for (auto i = 0; i < expected.size(); ++i) {
+    EXPECT_EQ(actual.at(i).Name(), expected.at(i).Name());
+    EXPECT_EQ(actual.at(i).Value(), expected.at(i).Value());
+  }
 }

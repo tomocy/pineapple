@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 
+#include "src/pineapple.h"
+
 namespace pineapple {
 enum class TokenKind {
   END_OF_FILE,
@@ -79,11 +81,15 @@ class Parser {
 
   void Parse() noexcept;
 
+  std::vector<StringFlag> Flags() const noexcept;
+
  private:
   void ReadToken() noexcept;
 
   Lexer lexer;
   Token token;
+
+  std::vector<StringFlag> flags;
 };
 }  // namespace pineapple
 

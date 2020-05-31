@@ -75,5 +75,5 @@ class Command {
   std::vector<Command> commands;
 };
 }  // namespace pineapple
-#endifnamespace pineapple
+
 #endif
