@@ -6,7 +6,13 @@
 #include <vector>
 
 namespace pineapple {
-enum class TokenKind { END_OF_FILE, UNKNOWN, SHORT_HYPHEN, STRING };
+enum class TokenKind {
+  END_OF_FILE,
+  UNKNOWN,
+  SHORT_HYPHEN,
+  LONG_HYPHEN,
+  STRING,
+};
 }  // namespace pineapple
 
 namespace pineapple {
@@ -35,7 +41,11 @@ class Lexer {
   Token ReadToken() noexcept;
 
  private:
+  Token ComposeDualTokenAs(TokenKind kind) noexcept;
+
   Token ComposeSingleTokenAs(TokenKind kind) noexcept;
+
+  Token ComposeTokenAs(size_t n, TokenKind kind) noexcept;
 
   Token ComposeString() noexcept;
 
@@ -47,9 +57,13 @@ class Lexer {
 
   bool DoHaveWhitespace() const noexcept;
 
+  bool WillHave(char c) const noexcept;
+
   void ReadChar() noexcept;
 
   char CurrentChar() const noexcept;
+
+  char NextChar() const noexcept;
 
   std::vector<char> src;
   size_t index;

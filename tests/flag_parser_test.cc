@@ -77,3 +77,21 @@ TEST(ReadToken, ShortFlag) {
     EXPECT_EQ(actual.Literal(), expected.Literal());
   }
 }
+
+TEST(ReadToken, LongFlag) {
+  auto src = std::string("--d");
+  auto expected = std::vector<pineapple::Token>{
+      pineapple::Token(pineapple::TokenKind::LONG_HYPHEN, "--"),
+      pineapple::Token(pineapple::TokenKind::STRING, "d"),
+      pineapple::kTokenEOF,
+  };
+
+  auto lex =
+      pineapple::Lexer(std::vector<char>(std::begin(src), std::end(src)));
+
+  for (auto expected : expected) {
+    auto actual = lex.ReadToken();
+    EXPECT_EQ(actual.Kind(), expected.Kind());
+    EXPECT_EQ(actual.Literal(), expected.Literal());
+  }
+}

@@ -26,6 +26,10 @@ Token Lexer::ReadToken() noexcept {
   }
 
   if (curr == '-') {
+    if (WillHave('-')) {
+      return ComposeDualTokenAs(TokenKind::LONG_HYPHEN);
+    }
+
     return ComposeSingleTokenAs(TokenKind::SHORT_HYPHEN);
   }
 
@@ -36,16 +40,27 @@ Token Lexer::ReadToken() noexcept {
   return ComposeSingleTokenAs(TokenKind::UNKNOWN);
 }
 
-Token Lexer::ComposeSingleTokenAs(TokenKind kind) noexcept {
-  auto tok = Token(kind, std::string{CurrentChar()});
+Token Lexer::ComposeDualTokenAs(TokenKind kind) noexcept {
+  return ComposeTokenAs(2, kind);
+}
 
+Token Lexer::ComposeSingleTokenAs(TokenKind kind) noexcept {
   if (kind == TokenKind::END_OF_FILE) {
-    tok = kTokenEOF;
+    ReadChar();
+    return kTokenEOF;
   }
 
-  ReadChar();
+  return ComposeTokenAs(1, kind);
+}
 
-  return tok;
+Token Lexer::ComposeTokenAs(size_t n, TokenKind kind) noexcept {
+  auto literal = std::string("");
+  for (auto i = 0; i < n; ++i) {
+    literal += std::string{CurrentChar()};
+    ReadChar();
+  }
+
+  return Token(kind, literal);
 }
 
 Token Lexer::ComposeString() noexcept {
@@ -79,6 +94,11 @@ bool Lexer::DoHaveWhitespace() const noexcept {
   return curr == ' ' || curr == '\t';
 }
 
+bool Lexer::WillHave(char c) const noexcept {
+  auto next = Lexer::NextChar();
+  return next == c;
+}
+
 void Lexer::ReadChar() noexcept {
   if (index >= src.size()) {
     return;
@@ -93,5 +113,15 @@ char Lexer::CurrentChar() const noexcept {
   }
 
   return src.at(index);
+}
+
+char Lexer::NextChar() const noexcept {
+  auto nextIndex = index + 1;
+
+  if (nextIndex >= src.size()) {
+    return kCharEOF;
+  }
+
+  return src.at(nextIndex);
 }
 }  // namespace pineapple
