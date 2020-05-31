@@ -31,7 +31,6 @@ class Token {
 };
 
 const Token kTokenEOF = Token(TokenKind::END_OF_FILE, "\x00");
-const Token kTokenUnknown = Token(TokenKind::UNKNOWN, "");
 }  // namespace pineapple
 
 namespace pineapple {
