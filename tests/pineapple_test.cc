@@ -9,7 +9,7 @@
 
 TEST(Parse, Empty) {
   auto src = std::string("");
-  auto expected = std::vector<pineapple::StringFlag>{};
+  auto expected = std::vector<pineapple::Flag>{};
 
   auto lex =
       pineapple::Lexer(std::vector<char>(std::begin(src), std::end(src)));
@@ -48,8 +48,7 @@ TEST(Parse, String) {
 
 TEST(Parse, ShortFlag) {
   auto src = std::string("-d");
-  auto expected =
-      std::vector<pineapple::StringFlag>{pineapple::StringFlag("d", "")};
+  auto expected = std::vector<pineapple::Flag>{pineapple::Flag("d", "")};
 
   auto lex =
       pineapple::Lexer(std::vector<char>(std::begin(src), std::end(src)));
@@ -69,8 +68,7 @@ TEST(Parse, ShortFlag) {
 
 TEST(Parse, ShortFlagWithValue) {
   auto src = std::string("-d a");
-  auto expected =
-      std::vector<pineapple::StringFlag>{pineapple::StringFlag("d", "a")};
+  auto expected = std::vector<pineapple::Flag>{pineapple::Flag("d", "a")};
 
   auto lex =
       pineapple::Lexer(std::vector<char>(std::begin(src), std::end(src)));
@@ -90,8 +88,7 @@ TEST(Parse, ShortFlagWithValue) {
 
 TEST(Parse, ShortFlagWithEqualValue) {
   auto src = std::string("-d=a");
-  auto expected =
-      std::vector<pineapple::StringFlag>{pineapple::StringFlag("d", "a")};
+  auto expected = std::vector<pineapple::Flag>{pineapple::Flag("d", "a")};
 
   auto lex =
       pineapple::Lexer(std::vector<char>(std::begin(src), std::end(src)));
@@ -111,8 +108,7 @@ TEST(Parse, ShortFlagWithEqualValue) {
 
 TEST(Parse, LongFlag) {
   auto src = std::string("--d");
-  auto expected =
-      std::vector<pineapple::StringFlag>{pineapple::StringFlag("d", "")};
+  auto expected = std::vector<pineapple::Flag>{pineapple::Flag("d", "")};
 
   auto lex =
       pineapple::Lexer(std::vector<char>(std::begin(src), std::end(src)));
@@ -132,8 +128,7 @@ TEST(Parse, LongFlag) {
 
 TEST(Parse, LongFlagWithValue) {
   auto src = std::string("--d a");
-  auto expected =
-      std::vector<pineapple::StringFlag>{pineapple::StringFlag("d", "a")};
+  auto expected = std::vector<pineapple::Flag>{pineapple::Flag("d", "a")};
 
   auto lex =
       pineapple::Lexer(std::vector<char>(std::begin(src), std::end(src)));
@@ -153,8 +148,7 @@ TEST(Parse, LongFlagWithValue) {
 
 TEST(Parse, LongFlagWithEqualValue) {
   auto src = std::string("--d=a");
-  auto expected =
-      std::vector<pineapple::StringFlag>{pineapple::StringFlag("d", "a")};
+  auto expected = std::vector<pineapple::Flag>{pineapple::Flag("d", "a")};
 
   auto lex =
       pineapple::Lexer(std::vector<char>(std::begin(src), std::end(src)));
@@ -174,9 +168,9 @@ TEST(Parse, LongFlagWithEqualValue) {
 
 TEST(Parse, Real) {
   auto src = std::string("--a aiueo --b -c=ccc x y z");
-  auto expected_flags = std::vector<pineapple::StringFlag>{
-      pineapple::StringFlag("a", "aiueo"), pineapple::StringFlag("b", ""),
-      pineapple::StringFlag("c", "ccc")};
+  auto expected_flags = std::vector<pineapple::Flag>{
+      pineapple::Flag("a", "aiueo"), pineapple::Flag("b", ""),
+      pineapple::Flag("c", "ccc")};
   auto expected_args = std::vector<std::string>{"x", "y", "z"};
 
   auto lex =

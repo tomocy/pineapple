@@ -11,14 +11,7 @@
 namespace pineapple {
 class Flag {
  public:
-  virtual ~Flag() {}
-};
-}  // namespace pineapple
-
-namespace pineapple {
-class StringFlag : public Flag {
- public:
-  StringFlag(const std::string& name, const std::string& value) noexcept;
+  Flag(const std::string& name, const std::string& value) noexcept;
 
   const std::string& Name() const noexcept;
 
@@ -37,7 +30,7 @@ class Parser {
 
   void Parse() noexcept;
 
-  const std::vector<StringFlag>& Flags() const noexcept;
+  const std::vector<Flag>& Flags() const noexcept;
 
   const std::vector<std::string>& Args() const noexcept;
 
@@ -56,7 +49,7 @@ class Parser {
   Token currToken;
   Token nextToken;
 
-  std::vector<StringFlag> flags;
+  std::vector<Flag> flags;
   std::vector<std::string> args;
 };
 }  // namespace pineapple

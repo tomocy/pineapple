@@ -11,13 +11,12 @@
 #include "src/flag_parser.h"
 
 namespace pineapple {
-StringFlag::StringFlag(const std::string& name,
-                       const std::string& value) noexcept
+Flag::Flag(const std::string& name, const std::string& value) noexcept
     : name(name), value(value) {}
 
-const std::string& StringFlag::Name() const noexcept { return name; }
+const std::string& Flag::Name() const noexcept { return name; }
 
-const std::string& StringFlag::Value() const noexcept { return value; }
+const std::string& Flag::Value() const noexcept { return value; }
 }  // namespace pineapple
 
 namespace pineapple {
@@ -25,7 +24,7 @@ Parser::Parser(const Lexer& lexer) noexcept
     : lexer(lexer),
       currToken(kTokenEOF),
       nextToken(kTokenEOF),
-      flags(std::vector<StringFlag>()),
+      flags(std::vector<Flag>()),
       args(std::vector<std::string>()) {
   ReadToken();
   ReadToken();
@@ -50,7 +49,7 @@ void Parser::Parse() noexcept {
   }
 }
 
-const std::vector<StringFlag>& Parser::Flags() const noexcept { return flags; }
+const std::vector<Flag>& Parser::Flags() const noexcept { return flags; }
 
 const std::vector<std::string>& Parser::Args() const noexcept { return args; }
 
@@ -64,12 +63,12 @@ void Parser::ParseFlag() noexcept {
   }
 
   if (DoHave(TokenKind::SHORT_HYPHEN) || DoHave(TokenKind::LONG_HYPHEN)) {
-    flags.push_back(StringFlag(name, ""));
+    flags.push_back(Flag(name, ""));
     return;
   }
 
   auto value = ParseString();
-  flags.push_back(StringFlag(name, value));
+  flags.push_back(Flag(name, value));
 }
 
 void Parser::ParseArg() noexcept {
