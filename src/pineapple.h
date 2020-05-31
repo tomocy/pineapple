@@ -3,12 +3,13 @@
 
 #include <functional>
 #include <string>
+#include <tuple>
 #include <vector>
 
 namespace pineapple {
 class Command {
  public:
-  using action_t = std::function<void()>;
+  using action_t = std::function<void(const std::vector<std::string>& args)>;
 
   Command(const std::string& name, const std::string& description) noexcept;
 
@@ -27,6 +28,11 @@ class Command {
   Command(const std::string& name, const std::string& description,
           const action_t& action,
           const std::vector<Command>& commands) noexcept;
+
+  void RunAsCommand(const std::string& name,
+                    const std::vector<std::string>& args) const noexcept;
+
+  std::tuple<Command, bool> FindCommand(const std::string& name) const noexcept;
 
   std::string CommandsHelp() const noexcept;
 

@@ -3,12 +3,13 @@
 #include <functional>
 #include <iostream>
 #include <string>
+#include <tuple>
 #include <vector>
 
 namespace pineapple {
 Command::Command(const std::string& name,
                  const std::string& description) noexcept
-    : Command(name, description, [this]() { this->PrintHelp(); }) {}
+    : Command(name, description, [this](auto _) { this->PrintHelp(); }) {}
 
 Command::Command(const std::string& name, const std::string& description,
                  const typename Command::action_t& action) noexcept
@@ -23,7 +24,21 @@ Command::Command(const std::string& name, const std::string& description,
       commands(commands) {}
 
 void Command::Run(const std::vector<std::string>& args) const noexcept {
-  action();
+  if (args.size() < 1) {
+    return;
+  }
+
+  if (commands.size() >= 1 && args.size() >= 2) {
+    auto name = args.at(1);
+    auto sliced =
+        std::vector<std::string>(std::begin(args) + 2, std::end(args));
+    RunAsCommand(name, sliced);
+
+    return;
+  }
+
+  auto sliced = std::vector<std::string>(std::begin(args) + 1, std::end(args));
+  action(sliced);
 }
 
 void Command::AddCommand(const Command& cmd) noexcept {
@@ -40,6 +55,29 @@ std::string Command::Help() const noexcept {
   }
 
   return help;
+}
+
+void Command::RunAsCommand(const std::string& name,
+                           const std::vector<std::string>& args) const
+    noexcept {
+  auto [cmd, found] = FindCommand(name);
+  if (!found) {
+    PrintHelp();
+    return;
+  }
+
+  cmd.Run(args);
+}
+
+std::tuple<Command, bool> Command::FindCommand(const std::string& name) const
+    noexcept {
+  for (auto cmd : commands) {
+    if (cmd.name == name) {
+      return {cmd, true};
+    }
+  }
+
+  return {Command(name, ""), false};
 }
 
 std::string Command::CommandsHelp() const noexcept {
