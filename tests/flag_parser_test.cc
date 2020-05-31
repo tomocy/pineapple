@@ -201,3 +201,12 @@ TEST(ReadToken, Real) {
     EXPECT_EQ(actual.Literal(), expected.Literal());
   }
 }
+
+TEST(Parse, Empty) {
+  auto src = std::string("");
+  auto lex =
+      pineapple::Lexer(std::vector<char>(std::begin(src), std::end(src)));
+  auto parser = pineapple::Parser(lex);
+
+  parser.Parse();
+}

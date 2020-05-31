@@ -131,5 +131,17 @@ char Lexer::NextChar() const noexcept {
 }  // namespace pineapple
 
 namespace pineapple {
-Parser::Parser(const Lexer& lexer) noexcept : lexer(lexer) {}
+Parser::Parser(const Lexer& lexer) noexcept : lexer(lexer), token(kTokenEOF) {}
+
+void Parser::Parse() noexcept {
+  while (true) {
+    switch (token.Kind()) {
+      case TokenKind::END_OF_FILE:
+      case TokenKind::UNKNOWN:
+        return;
+    }
+  }
+}
+
+void Parser::ReadToken() noexcept { token = lexer.ReadToken(); }
 }  // namespace pineapple

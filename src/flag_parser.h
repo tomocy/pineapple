@@ -77,8 +77,13 @@ class Parser {
  public:
   Parser(const Lexer& lexer) noexcept;
 
+  void Parse() noexcept;
+
  private:
+  void ReadToken() noexcept;
+
   Lexer lexer;
+  Token token;
 };
 }  // namespace pineapple
 
