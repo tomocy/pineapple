@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+#include "src/flag_parser.h"
 #include "src/pineapple.h"
 
 namespace pineapple {
