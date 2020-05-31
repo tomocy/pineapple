@@ -8,9 +8,57 @@
 #include <vector>
 
 namespace pineapple {
+class Flag {
+ public:
+  Flag() = default;
+
+  Flag(const std::string& name) noexcept;
+
+  Flag(const std::string& name, const std::string& value) noexcept;
+
+  const std::string& Name() const noexcept;
+
+  const std::string& Value() const noexcept;
+
+ private:
+  std::string name;
+
+  std::string value;
+};
+}  // namespace pineapple
+
+namespace pineapple {
 class Context {
  public:
   Context() = default;
+
+  Context(const std::map<std::string, Flag>& flags,
+          const std::vector<std::string>& args) noexcept;
+
+  std::string Get(const std::string& name) const noexcept;
+
+  const std::vector<std::string>& Args() const noexcept;
+
+ private:
+  std::tuple<Flag, bool> Find(const std::string& name) const noexcept;
+
+  std::map<std::string, Flag> flags;
+
+  std::vector<std::string> args;
+};
+}  // namespace pineapple
+
+namespace pineapple {
+class Parser {
+ public:
+  Parser() = default;
+
+  Context Parse(const std::vector<std::string>& args) const noexcept;
+
+ private:
+  bool IsFlagName(const std::string& name) const noexcept;
+
+  std::string TrimFlagName(const std::string& name) const noexcept;
 };
 }  // namespace pineapple
 
@@ -25,9 +73,9 @@ class Command {
 
   const std::string& Name() const noexcept;
 
-  Command& WithAction(const action_t&) noexcept;
+  Command& WithAction(const action_t& action) noexcept;
 
-  const action_t& Action() const noexcept;
+  void Run(const std::vector<std::string>& args) const noexcept;
 
  private:
   std::string name;
