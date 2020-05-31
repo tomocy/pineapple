@@ -1,3 +1,7 @@
 #include "src/flag_parser.h"
 
-namespace pineapple {}
+#include <vector>
+
+namespace pineapple {
+Lexer::Lexer(const std::vector<char>& src) noexcept : src(src) {}
+}  // namespace pineapple
