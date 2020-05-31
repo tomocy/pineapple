@@ -197,23 +197,22 @@ TEST(Parse, Real) {
   }
 }
 
-// TEST(FlagSet, Parse) {
-//   auto src =
-//       std::vector<std::string>{"--a", "aiueo", "--b", "-c=ccc", "x", "y",
-//       "z"};
-//   auto expected_args = std::vector<std::string>{"x", "y", "z"};
+TEST(FlagSet, Parse) {
+  auto src =
+      std::vector<std::string>{"--a", "aiueo", "--b", "-c=ccc", "x", "y", "z"};
+  auto expected_args = std::vector<std::string>{"x", "y", "z"};
 
-//   auto flags = pineapple::FlagSet(std::vector<pineapple::Flag>());
-//   flags.Parse(src);
+  auto flags = pineapple::FlagSet(std::vector<pineapple::Flag>());
+  flags.Parse(src);
 
-//   auto actual_args = flags.Args();
+  auto actual_args = flags.Args();
 
-//   ASSERT_EQ(actual_args.size(), expected_args.size());
+  ASSERT_EQ(actual_args.size(), expected_args.size());
 
-//   for (auto i = 0; i < expected_args.size(); ++i) {
-//     EXPECT_EQ(actual_args.at(i), expected_args.at(i));
-//   }
-// }
+  for (auto i = 0; i < expected_args.size(); ++i) {
+    EXPECT_EQ(actual_args.at(i), expected_args.at(i));
+  }
+}
 
 TEST(Command, Run) {
   auto s = std::string("");

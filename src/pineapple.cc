@@ -98,14 +98,14 @@ namespace pineapple {
 FlagSet::FlagSet(const std::vector<Flag>& flags) noexcept : flags(flags) {}
 
 void FlagSet::Parse(const std::vector<std::string>& args) noexcept {
-  // auto src = Source(args);
-  // auto lexer = Lexer(src);
-  // auto parser = Parser(lexer);
+  auto src = Source(args);
+  auto lexer = Lexer(src);
+  auto parser = Parser(lexer);
 
-  // parser.Parse();
+  parser.Parse();
 
-  // flags = parser.Flags();
-  // args = parser.Args();
+  flags = parser.Flags();
+  this->args = parser.Args();
 }
 
 const std::vector<std::string>& FlagSet::Args() const noexcept { return args; }
