@@ -61,10 +61,16 @@ class FlagSet {
 
   void Parse(const std::vector<std::string>& args) noexcept;
 
+  std::string Get(const std::string& name) const noexcept;
+
   const std::vector<std::string>& Args() const noexcept;
 
  private:
   std::vector<char> Source(const std::vector<std::string>& args) const noexcept;
+
+  void JoinFlags(const std::vector<Flag>& flags) noexcept;
+
+  std::tuple<Flag, bool> FindFlag(const std::string& name) const noexcept;
 
   std::vector<Flag> flags;
   std::vector<std::string> args;

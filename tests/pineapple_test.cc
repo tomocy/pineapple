@@ -198,12 +198,23 @@ TEST(Parse, Real) {
 }
 
 TEST(FlagSet, Parse) {
-  auto src =
-      std::vector<std::string>{"--a", "aiueo", "--b", "-c=ccc", "x", "y", "z"};
+  auto src = std::vector<std::string>{"--a",     "aiueo", "--b", "-c",
+                                      "-d=ddee", "x",     "y",   "z"};
+  auto expected_flags = std::vector<pineapple::Flag>{
+      pineapple::Flag("a", "aiueo"),
+      pineapple::Flag("b", ""),
+      pineapple::Flag("c", "ccc"),
+      pineapple::Flag("d", "ddee"),
+  };
   auto expected_args = std::vector<std::string>{"x", "y", "z"};
 
-  auto flags = pineapple::FlagSet(std::vector<pineapple::Flag>());
+  auto flags = pineapple::FlagSet(expected_flags);
+
   flags.Parse(src);
+
+  for (auto expected : expected_flags) {
+    EXPECT_EQ(flags.Get(expected.Name()), expected.Value());
+  }
 
   auto actual_args = flags.Args();
 

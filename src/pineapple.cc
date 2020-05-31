@@ -104,8 +104,17 @@ void FlagSet::Parse(const std::vector<std::string>& args) noexcept {
 
   parser.Parse();
 
-  flags = parser.Flags();
+  JoinFlags(parser.Flags());
   this->args = parser.Args();
+}
+
+std::string FlagSet::Get(const std::string& name) const noexcept {
+  auto [flag, found] = FindFlag(name);
+  if (!found) {
+    return "";
+  }
+
+  return flag.Value();
 }
 
 const std::vector<std::string>& FlagSet::Args() const noexcept { return args; }
@@ -121,6 +130,30 @@ std::vector<char> FlagSet::Source(const std::vector<std::string>& args) const
   return std::vector<char>(std::begin(src), std::end(src));
 
   return std::vector<char>(std::begin(src), std::end(src));
+}
+
+void FlagSet::JoinFlags(const std::vector<Flag>& flags) noexcept {
+  for (auto i = 0; i < flags.size(); ++i) {
+    auto [flag, found] = FindFlag(flags.at(i).Name());
+    if (!found) {
+      continue;
+    }
+
+    auto value =
+        (flags.at(i).Value() != "") ? flags.at(i).Value() : flag.Value();
+    this->flags.at(i) = Flag(flags.at(i).Name(), value);
+  }
+}
+
+std::tuple<Flag, bool> FlagSet::FindFlag(const std::string& name) const
+    noexcept {
+  for (auto flag : flags) {
+    if (flag.Name() == name) {
+      return {flag, true};
+    }
+  }
+
+  return {Flag("", ""), false};
 }
 }  // namespace pineapple
 
