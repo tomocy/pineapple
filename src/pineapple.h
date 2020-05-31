@@ -18,6 +18,10 @@ class StringFlag : public Flag {
  public:
   StringFlag(const std::string& name, const std::string& value) noexcept;
 
+  const std::string& Name() const noexcept;
+
+  const std::string& Value() const noexcept;
+
  private:
   std::string name;
   std::string value;
@@ -71,4 +75,5 @@ class Command {
   std::vector<Command> commands;
 };
 }  // namespace pineapple
+#endifnamespace pineapple
 #endif

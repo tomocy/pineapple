@@ -10,6 +10,10 @@ namespace pineapple {
 StringFlag::StringFlag(const std::string& name,
                        const std::string& value) noexcept
     : name(name), value(value) {}
+
+const std::string& StringFlag::Name() const noexcept { return name; }
+
+const std::string& StringFlag::Value() const noexcept { return value; }
 }  // namespace pineapple
 
 namespace pineapple {
