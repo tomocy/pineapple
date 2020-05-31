@@ -150,6 +150,7 @@ void Parser::Parse() noexcept {
       case TokenKind::UNKNOWN:
         return;
       case TokenKind::SHORT_HYPHEN:
+      case TokenKind::LONG_HYPHEN:
         ParseFlag();
         break;
       case TokenKind::STRING:
