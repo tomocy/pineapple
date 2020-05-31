@@ -8,5 +8,10 @@
 
 TEST(Command, Help) {
   auto app = pineapple::Command("test", "a cli");
-  EXPECT_EQ(app.Help(), R"(test - a cli)");
+  app.AddCommand(pineapple::Command("sub1", "a subcommand"));
+  EXPECT_EQ(app.Help(), R"(test - a cli
+
+Commands:
+sub1    a subcommand
+)");
 }
