@@ -367,3 +367,34 @@ TEST(Parse, LongFlagWithEqualValue) {
     EXPECT_EQ(actual.at(i).Value(), expected.at(i).Value());
   }
 }
+
+TEST(Parse, Real) {
+  auto src = std::string("--a aiueo --b -c=ccc x y z");
+  auto expected_flags = std::vector<pineapple::StringFlag>{
+      pineapple::StringFlag("a", "aiueo"), pineapple::StringFlag("b", ""),
+      pineapple::StringFlag("c", "ccc")};
+  auto expected_args = std::vector<std::string>{"x", "y", "z"};
+
+  auto lex =
+      pineapple::Lexer(std::vector<char>(std::begin(src), std::end(src)));
+  auto parser = pineapple::Parser(lex);
+
+  parser.Parse();
+
+  auto actual_flags = parser.Flags();
+
+  ASSERT_EQ(actual_flags.size(), expected_flags.size());
+
+  for (auto i = 0; i < expected_flags.size(); ++i) {
+    EXPECT_EQ(actual_flags.at(i).Name(), expected_flags.at(i).Name());
+    EXPECT_EQ(actual_flags.at(i).Value(), expected_flags.at(i).Value());
+  }
+
+  auto actual_args = parser.Args();
+
+  ASSERT_EQ(actual_args.size(), expected_args.size());
+
+  for (auto i = 0; i < expected_args.size(); ++i) {
+    EXPECT_EQ(actual_args.at(i), expected_args.at(i));
+  }
+}
