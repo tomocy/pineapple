@@ -19,7 +19,9 @@ Command::Command(const std::string& name, const std::string& description,
 
 const std::string& Command::Name() const noexcept { return name; }
 
-std::string Command::Usage() const noexcept {
+std::string Command::Usage() const noexcept { return Outline(); }
+
+std::string Command::Outline() const noexcept {
   auto usage = name;
   if (!description.empty()) {
     usage += "  " + description;

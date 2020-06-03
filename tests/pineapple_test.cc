@@ -27,6 +27,12 @@ TEST(CommandUsage, Success) {
   EXPECT_EQ("do  do something", cmd.Usage());
 }
 
+TEST(CommandOutline, Success) {
+  auto cmd = pineapple::Command("do", "do something", [](auto args) {});
+
+  EXPECT_EQ("do  do something", cmd.Outline());
+}
+
 TEST(App, Success) { EXPECT_NO_THROW(pineapple::App("app", "a cli app")); }
 
 TEST(App, FailedDueToEmptyName) {

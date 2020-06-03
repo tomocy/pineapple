@@ -23,6 +23,8 @@ class Command {
 
   std::string Usage() const noexcept;
 
+  std::string Outline() const noexcept;
+
   void Run(const std::vector<std::string>& args) const;
 
  private:
