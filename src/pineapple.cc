@@ -12,7 +12,7 @@
 
 namespace pineapple {
 Command::Command(const std::string& name, const std::string& description,
-                 const typename Command::action_t& action)
+                 const pineapple::action_t& action)
     : name(ValidateName(name)),
       description(ValidateDescription(description)),
       action(ValidateAction(action)) {}
@@ -45,7 +45,7 @@ const std::string& Command::ValidateDescription(
   return description;
 }
 
-const typename Command::action_t& Command::ValidateAction(
+const pineapple::action_t& Command::ValidateAction(
     const action_t& action) const {
   if (action == nullptr) {
     throw Exception("action should not be null");

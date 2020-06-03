@@ -10,10 +10,12 @@
 #include "src/exceptions.h"
 
 namespace pineapple {
+using action_t = std::function<void(const std::vector<std::string>& args)>;
+}
+
+namespace pineapple {
 class Command {
  public:
-  using action_t = std::function<void(const std::vector<std::string>& args)>;
-
   Command() = default;
 
   Command(const std::string& name, const std::string& description,
@@ -43,8 +45,6 @@ class Command {
 namespace pineapple {
 class App {
  public:
-  using action_t = std::function<void(const std::vector<std::string>& args)>;
-
   App(const std::string& name);
 
   App(const std::string& name, const std::string& description);
