@@ -17,6 +17,8 @@ Command::Command(const std::string& name, const std::string& description,
       description(ValidateDescription(description)),
       action(ValidateAction(action)) {}
 
+const std::string& Command::Name() const noexcept { return name; }
+
 std::string Command::Usage() const noexcept {
   auto usage = name;
   if (!description.empty()) {

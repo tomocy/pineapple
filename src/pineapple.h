@@ -19,6 +19,8 @@ class Command {
   Command(const std::string& name, const std::string& description,
           const action_t& action);
 
+  const std::string& Name() const noexcept;
+
   std::string Usage() const noexcept;
 
  private:
