@@ -7,6 +7,8 @@
 #include <tuple>
 #include <vector>
 
+#include "src/exceptions.h"
+
 namespace pineapple {
 class Command {
  public:
@@ -40,6 +42,21 @@ class Command {
   std::string description;
   action_t action;
   std::map<std::string, Command> commands;
+};
+}  // namespace pineapple
+
+namespace pineapple {
+class App {
+ public:
+  App(const std::string& name, const std::string& description);
+
+ private:
+  const std::string& ValidateName(const std::string& name) const;
+
+  const std::string& ValidateDescription(const std::string& description) const;
+
+  std::string name;
+  std::string description;
 };
 }  // namespace pineapple
 

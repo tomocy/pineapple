@@ -108,3 +108,21 @@ std::string Command::HelpAsSubcommand() const noexcept {
   return name + "  " + description;
 }
 }  // namespace pineapple
+
+namespace pineapple {
+App::App(const std::string& name, const std::string& description)
+    : name(ValidateName(name)), description(ValidateDescription(description)) {}
+
+const std::string& App::ValidateName(const std::string& name) const {
+  if (name.empty()) {
+    throw Exception("name should not be empty");
+  }
+
+  return name;
+}
+
+const std::string& App::ValidateDescription(
+    const std::string& description) const {
+  return description;
+}
+}  // namespace pineapple
