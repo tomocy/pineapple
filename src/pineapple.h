@@ -32,7 +32,9 @@ class Command {
 
   std::tuple<Command, bool> FindCommand(const std::string& name) const noexcept;
 
-  std::string CommandsHelp() const noexcept;
+  std::string HelpOfSubcommands() const noexcept;
+
+  std::string HelpAsSubcommand() const noexcept;
 
   std::string name;
   std::string description;

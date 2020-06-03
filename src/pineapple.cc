@@ -56,10 +56,11 @@ void Command::AddCommand(const Command& command) {
 void Command::PrintHelp() const noexcept { std::cout << Help() << std::endl; }
 
 std::string Command::Help() const noexcept {
-  auto help = name + " - " + description;
-  auto cmdsHelp = CommandsHelp();
+  auto help = name + " - " + description + "\n";
+
+  auto cmdsHelp = HelpOfSubcommands();
   if (!cmdsHelp.empty()) {
-    help += "\n\n" + cmdsHelp;
+    help += cmdsHelp;
   }
 
   return help;
@@ -89,7 +90,7 @@ std::tuple<Command, bool> Command::FindCommand(const std::string& name) const
   return {commands.at(name), true};
 }
 
-std::string Command::CommandsHelp() const noexcept {
+std::string Command::HelpOfSubcommands() const noexcept {
   if (commands.size() == 0) {
     return "";
   }
@@ -97,9 +98,13 @@ std::string Command::CommandsHelp() const noexcept {
   auto help = std::string("Commands:\n");
 
   for (auto [_, cmd] : commands) {
-    help += cmd.name + "    " + cmd.description + "\n";
+    help += cmd.HelpAsSubcommand() + "\n";
   }
 
   return help.erase(help.size() - 1, 1);
+}
+
+std::string Command::HelpAsSubcommand() const noexcept {
+  return name + "  " + description;
 }
 }  // namespace pineapple
