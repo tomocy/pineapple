@@ -39,6 +39,27 @@ TEST(App, FailedDueToEmptyName) {
   EXPECT_THROW(pineapple::App("", "a cli app"), pineapple::Exception);
 }
 
+TEST(AppUsage, Success) {
+  auto app = pineapple::App("app", "a cli app");
+
+  EXPECT_EQ("app - a cli app", app.Usage());
+}
+
+TEST(AppUsage, SuccessWithCommands) {
+  auto app = pineapple::App("app", "a cli app");
+
+  app.AddCommand(
+      pineapple::Command("create", "create something", [](auto _) {}));
+  app.AddCommand(
+      pineapple::Command("delete", "delete something", [](auto _) {}));
+
+  EXPECT_EQ(R"(app - a cli app
+Commands:
+create  create something
+delete  delete something)",
+            app.Usage());
+}
+
 TEST(AppAddCommand, Success) {
   auto app = pineapple::App("app", "a cli app");
 

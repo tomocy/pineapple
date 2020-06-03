@@ -68,6 +68,27 @@ App::App(const std::string& name, const std::string& description,
       action(action),
       commands(std::map<std::string, Command>()) {}
 
+std::string App::Usage() const noexcept {
+  auto usage = name;
+
+  if (!description.empty()) {
+    usage += " - " + description;
+  }
+
+  if (!commands.empty()) {
+    usage += "\n";
+    usage += "Commands:\n";
+
+    for (auto [_, cmd] : commands) {
+      usage += cmd.Outline() + "\n";
+    }
+
+    usage = usage.erase(usage.size() - 1, 1);
+  }
+
+  return usage;
+}
+
 void App::AddCommand(const Command& command) {
   if (commands.find(command.Name()) != commands.end()) {
     throw Exception("command \"" + command.Name() + "\" is already added");

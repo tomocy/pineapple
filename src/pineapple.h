@@ -50,6 +50,8 @@ class App {
   App(const std::string& name, const std::string& description,
       const action_t& action);
 
+  std::string Usage() const noexcept;
+
   void AddCommand(const Command& command);
 
   void Run(const std::vector<std::string>& args) const;
