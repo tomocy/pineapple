@@ -57,6 +57,14 @@ App::App(const std::string& name, const std::string& description)
       description(ValidateDescription(description)),
       commands(std::map<std::string, Command>()) {}
 
+void App::AddCommand(const Command& command) {
+  if (commands.find(command.Name()) != commands.end()) {
+    throw Exception("command \"" + command.Name() + "\" is already added");
+  }
+
+  commands.emplace(command.Name(), command);
+}
+
 const std::string& App::ValidateName(const std::string& name) const {
   if (name.empty()) {
     throw Exception("name should not be empty");

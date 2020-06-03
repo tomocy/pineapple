@@ -41,6 +41,8 @@ class App {
  public:
   App(const std::string& name, const std::string& description);
 
+  void AddCommand(const Command& command);
+
  private:
   const std::string& ValidateName(const std::string& name) const;
 

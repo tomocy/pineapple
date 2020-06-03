@@ -32,3 +32,20 @@ TEST(App, Success) { EXPECT_NO_THROW(pineapple::App("app", "a cli app")); }
 TEST(App, FailedDueToEmptyName) {
   EXPECT_THROW(pineapple::App("", "a cli app"), pineapple::Exception);
 }
+
+TEST(AppAddCommand, Success) {
+  auto app = pineapple::App("app", "a cli app");
+
+  EXPECT_NO_THROW(app.AddCommand(
+      pineapple::Command("do", "do somethiing", [](auto args) {})));
+}
+
+TEST(AppAddCommand, FailedDueToDuplicatedCommands) {
+  auto app = pineapple::App("app", "a cli app");
+
+  auto cmd = pineapple::Command("do", "do somethiing", [](auto args) {});
+
+  app.AddCommand(cmd);
+
+  EXPECT_THROW(app.AddCommand(cmd), pineapple::Exception);
+}
