@@ -16,32 +16,21 @@ class Command {
 
   Command() = default;
 
-  Command(const std::string& name, const std::string& description) noexcept;
-
   Command(const std::string& name, const std::string& description,
-          const action_t& action) noexcept;
+          const action_t& action);
 
-  void Run(const std::vector<std::string>& args) const noexcept;
-
-  void AddCommand(const Command& command);
-
-  void PrintHelp() const noexcept;
-
-  std::string Help() const noexcept;
+  std::string Usage() const noexcept;
 
  private:
-  void RunAsSubcommand(const std::vector<std::string>& args) const noexcept;
+  const std::string& ValidateName(const std::string& name) const;
 
-  std::tuple<Command, bool> FindCommand(const std::string& name) const noexcept;
+  const std::string& ValidateDescription(const std::string& descriptoin) const;
 
-  std::string HelpOfSubcommands() const noexcept;
-
-  std::string HelpAsSubcommand() const noexcept;
+  const action_t& ValidateAction(const action_t& action) const;
 
   std::string name;
   std::string description;
   action_t action;
-  std::map<std::string, Command> commands;
 };
 }  // namespace pineapple
 
