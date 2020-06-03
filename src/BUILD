@@ -9,3 +9,9 @@ cc_library(
         "//tests:__pkg__",
     ],
 )
+
+cc_library(
+    name = "exceptions",
+    srcs = ["exceptions.cc"],
+    hdrs = ["exceptions.h"],
+)
