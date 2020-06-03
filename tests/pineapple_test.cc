@@ -17,6 +17,10 @@ TEST(Command, Run) {
     s = joined.str();
   });
 
+  app.Run(std::vector<std::string>{"/program"});
+
+  EXPECT_EQ(s, "");
+
   app.Run(std::vector<std::string>{"/program", "a", "b", "c,d", "e"});
 
   EXPECT_EQ(s, "a,b,c,d,e,");

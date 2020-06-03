@@ -8,6 +8,10 @@ cc_library(
         "//example:__pkg__",
         "//tests:__pkg__",
     ],
+    deps = [
+        "exceptions",
+        "@flags//src:flags",
+    ],
 )
 
 cc_library(

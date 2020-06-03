@@ -2,11 +2,13 @@
 
 #include <functional>
 #include <iostream>
-#include <iterator>
-#include <sstream>
+#include <map>
 #include <string>
 #include <tuple>
 #include <vector>
+
+#include "external/flags/src/flags.h"
+#include "src/exceptions.h"
 
 namespace pineapple {
 Command::Command(const std::string& name,
@@ -15,36 +17,40 @@ Command::Command(const std::string& name,
 
 Command::Command(const std::string& name, const std::string& description,
                  const typename Command::action_t& action) noexcept
-    : Command(name, description, action, std::vector<Command>()) {}
-
-Command::Command(const std::string& name, const std::string& description,
-                 const typename Command::action_t& action,
-                 const std::vector<Command>& commands) noexcept
     : name(name),
       description(description),
       action(action),
-      commands(commands) {}
+      commands(std::map<std::string, Command>()) {}
 
 void Command::Run(const std::vector<std::string>& args) const noexcept {
   if (args.size() < 1) {
     return;
   }
 
-  if (commands.size() >= 1 && args.size() >= 2) {
-    auto name = args.at(1);
-    auto sliced =
-        std::vector<std::string>(std::begin(args) + 2, std::end(args));
-    RunAsCommand(name, sliced);
+  auto name = args.at(0);
 
+  auto flags = flags::FlagSet(name);
+
+  auto trimmed = std::vector<std::string>(std::begin(args) + 1, std::end(args));
+
+  if (commands.size() >= 1) {
+    RunAsSubcommand(trimmed);
     return;
   }
 
-  auto sliced = std::vector<std::string>(std::begin(args) + 1, std::end(args));
-  action(sliced);
+  flags.Parse(trimmed);
+
+  action(flags.Args());
+
+  return;
 }
 
-void Command::AddCommand(const Command& cmd) noexcept {
-  commands.push_back(cmd);
+void Command::AddCommand(const Command& command) {
+  if (commands.find(command.name) != commands.end()) {
+    throw Exception("command \"" + command.name + "\" is already added");
+  }
+
+  commands[command.name] = command;
 }
 
 void Command::PrintHelp() const noexcept { std::cout << Help() << std::endl; }
@@ -59,12 +65,15 @@ std::string Command::Help() const noexcept {
   return help;
 }
 
-void Command::RunAsCommand(const std::string& name,
-                           const std::vector<std::string>& args) const
+void Command::RunAsSubcommand(const std::vector<std::string>& args) const
     noexcept {
+  if (args.size() < 1) {
+    return;
+  }
+
+  auto name = args.at(0);
   auto [cmd, found] = FindCommand(name);
   if (!found) {
-    PrintHelp();
     return;
   }
 
@@ -73,13 +82,11 @@ void Command::RunAsCommand(const std::string& name,
 
 std::tuple<Command, bool> Command::FindCommand(const std::string& name) const
     noexcept {
-  for (auto cmd : commands) {
-    if (cmd.name == name) {
-      return {cmd, true};
-    }
+  if (commands.find(name) == commands.end()) {
+    return {Command(), false};
   }
 
-  return {Command(name, ""), false};
+  return {commands.at(name), true};
 }
 
 std::string Command::CommandsHelp() const noexcept {
@@ -89,7 +96,7 @@ std::string Command::CommandsHelp() const noexcept {
 
   auto help = std::string("Commands:\n");
 
-  for (auto cmd : commands) {
+  for (auto [_, cmd] : commands) {
     help += cmd.name + "    " + cmd.description + "\n";
   }
 
