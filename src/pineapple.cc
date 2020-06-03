@@ -59,6 +59,13 @@ App::App(const std::string& name, const std::string& description)
       description(ValidateDescription(description)),
       commands(std::map<std::string, Command>()) {}
 
+App::App(const std::string& name, const std::string& description,
+         const action_t& action)
+    : name(ValidateName(name)),
+      description(ValidateDescription(description)),
+      action(action),
+      commands(std::map<std::string, Command>()) {}
+
 void App::AddCommand(const Command& command) {
   if (commands.find(command.Name()) != commands.end()) {
     throw Exception("command \"" + command.Name() + "\" is already added");
@@ -73,20 +80,31 @@ void App::Run(const std::vector<std::string>& args) const {
         "insufficient arguments: one argument is required at least");
   }
 
+  auto flags = flags::FlagSet(name);
+
   auto trimmed = std::vector<std::string>(std::begin(args) + 1, std::end(args));
-  if (trimmed.size() < 1) {
+  flags.Parse(trimmed);
+
+  auto parsed = flags.Args();
+
+  if (parsed.size() < 1) {
+    DoAction(parsed);
     return;
   }
 
-  auto name = trimmed.at(0);
-  if (commands.find(name) == commands.end()) {
-    throw Exception("unknown command: command \"" + name + "\" is not added");
+  if (DoHaveCommand(parsed.at(0))) {
+    RunCommand(parsed);
+    return;
   }
 
-  trimmed =
-      std::vector<std::string>(std::begin(trimmed) + 1, std::end(trimmed));
+  if (action != nullptr) {
+    DoAction(parsed);
+    return;
+  }
 
-  commands.at(name).Run(trimmed);
+  throw Exception("argument\"" + parsed.at(0) +
+                  "\" is not handled at all: action or command named \"" +
+                  parsed.at(0) + "\" is needed");
 }
 
 const std::string& App::ValidateName(const std::string& name) const {
@@ -100,5 +118,34 @@ const std::string& App::ValidateName(const std::string& name) const {
 const std::string& App::ValidateDescription(
     const std::string& description) const {
   return description;
+}
+
+void App::DoAction(const std::vector<std::string>& args) const {
+  if (action == nullptr) {
+    return;
+  }
+
+  action(args);
+}
+
+void App::RunCommand(const std::vector<std::string>& args) const {
+  if (args.size() < 1) {
+    throw Exception(
+        "insufficient arguments: one argument is required at least");
+  }
+
+  auto name = args.at(0);
+
+  if (!DoHaveCommand(name)) {
+    throw Exception("unknown command: command \"" + name + "\" is not added");
+  }
+
+  auto trimmed = std::vector<std::string>(std::begin(args) + 1, std::end(args));
+
+  commands.at(name).Run(trimmed);
+}
+
+bool App::DoHaveCommand(const std::string& name) const noexcept {
+  return commands.find(name) != commands.end();
 }
 }  // namespace pineapple

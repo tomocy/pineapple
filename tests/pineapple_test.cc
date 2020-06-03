@@ -56,6 +56,33 @@ TEST(AppRun, Success) {
   EXPECT_NO_THROW(app.Run(std::vector<std::string>{"/app"}));
 }
 
+TEST(AppRun, SuccessInActionWithoutArgs) {
+  auto called = false;
+  auto app =
+      pineapple::App("app", "a cli app", [&called](auto _) { called = true; });
+
+  EXPECT_NO_THROW(
+      app.Run(std::vector<std::string>{"/app", "a", "b", "c,d", "e"}));
+
+  EXPECT_TRUE(called);
+}
+
+TEST(AppRun, SuccessInActionWithArgs) {
+  auto app_args = std::string("");
+  auto app = pineapple::App("app", "a cli app", [&app_args](auto args) {
+    std::ostringstream joined;
+    std::copy(std::begin(args), std::end(args),
+              std::ostream_iterator<std::string>(joined, ","));
+
+    app_args = joined.str();
+  });
+
+  EXPECT_NO_THROW(
+      app.Run(std::vector<std::string>{"/app", "a", "b", "c,d", "e"}));
+
+  EXPECT_EQ("a,b,c,d,e,", app_args);
+}
+
 TEST(AppRun, SuccessInCommandWithoutArgs) {
   auto app = pineapple::App("app", "a cli app");
 

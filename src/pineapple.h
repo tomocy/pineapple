@@ -41,7 +41,12 @@ class Command {
 namespace pineapple {
 class App {
  public:
+  using action_t = std::function<void(const std::vector<std::string>& args)>;
+
   App(const std::string& name, const std::string& description);
+
+  App(const std::string& name, const std::string& description,
+      const action_t& action);
 
   void AddCommand(const Command& command);
 
@@ -52,8 +57,15 @@ class App {
 
   const std::string& ValidateDescription(const std::string& description) const;
 
+  void DoAction(const std::vector<std::string>& args) const;
+
+  void RunCommand(const std::vector<std::string>& args) const;
+
+  bool DoHaveCommand(const std::string& name) const noexcept;
+
   std::string name;
   std::string description;
+  action_t action;
   std::map<std::string, Command> commands;
 };
 }  // namespace pineapple
