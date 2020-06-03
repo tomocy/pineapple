@@ -28,6 +28,8 @@ std::string Command::Usage() const noexcept {
   return usage;
 }
 
+void Command::Run(const std::vector<std::string>& args) const { action(args); }
+
 const std::string& Command::ValidateName(const std::string& name) const {
   if (name.empty()) {
     throw Exception("name should not be empty");
@@ -63,6 +65,28 @@ void App::AddCommand(const Command& command) {
   }
 
   commands.emplace(command.Name(), command);
+}
+
+void App::Run(const std::vector<std::string>& args) const {
+  if (args.size() < 1) {
+    throw Exception(
+        "insufficient arguments: one argument is required at least");
+  }
+
+  auto trimmed = std::vector<std::string>(std::begin(args) + 1, std::end(args));
+  if (trimmed.size() < 1) {
+    return;
+  }
+
+  auto name = trimmed.at(0);
+  if (commands.find(name) == commands.end()) {
+    throw Exception("unknown command: command \"" + name + "\" is not added");
+  }
+
+  trimmed =
+      std::vector<std::string>(std::begin(trimmed) + 1, std::end(trimmed));
+
+  commands.at(name).Run(trimmed);
 }
 
 const std::string& App::ValidateName(const std::string& name) const {

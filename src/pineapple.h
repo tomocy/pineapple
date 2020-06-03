@@ -23,6 +23,8 @@ class Command {
 
   std::string Usage() const noexcept;
 
+  void Run(const std::vector<std::string>& args) const;
+
  private:
   const std::string& ValidateName(const std::string& name) const;
 
@@ -42,6 +44,8 @@ class App {
   App(const std::string& name, const std::string& description);
 
   void AddCommand(const Command& command);
+
+  void Run(const std::vector<std::string>& args) const;
 
  private:
   const std::string& ValidateName(const std::string& name) const;
