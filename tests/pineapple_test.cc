@@ -39,13 +39,19 @@ TEST(App, FailedDueToEmptyName) {
   EXPECT_THROW(pineapple::App("", "a cli app"), pineapple::Exception);
 }
 
-TEST(AppUsage, Success) {
+TEST(AppUsage, SuccessInWithoutDescription) {
+  auto app = pineapple::App("app");
+
+  EXPECT_EQ("app", app.Usage());
+}
+
+TEST(AppUsage, SuccessInWithDescription) {
   auto app = pineapple::App("app", "a cli app");
 
   EXPECT_EQ("app - a cli app", app.Usage());
 }
 
-TEST(AppUsage, SuccessWithCommands) {
+TEST(AppUsage, SuccessInWithCommands) {
   auto app = pineapple::App("app", "a cli app");
 
   app.AddCommand(

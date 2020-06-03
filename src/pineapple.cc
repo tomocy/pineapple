@@ -56,10 +56,13 @@ const typename Command::action_t& Command::ValidateAction(
 }  // namespace pineapple
 
 namespace pineapple {
+App::App(const std::string& name) : App(name, "", nullptr) {}
+
 App::App(const std::string& name, const std::string& description)
-    : name(ValidateName(name)),
-      description(ValidateDescription(description)),
-      commands(std::map<std::string, Command>()) {}
+    : App(name, description, nullptr) {}
+
+App::App(const std::string& name, const action_t& action)
+    : App(name, "", action) {}
 
 App::App(const std::string& name, const std::string& description,
          const action_t& action)
