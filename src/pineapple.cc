@@ -53,7 +53,9 @@ const typename Command::action_t& Command::ValidateAction(
 
 namespace pineapple {
 App::App(const std::string& name, const std::string& description)
-    : name(ValidateName(name)), description(ValidateDescription(description)) {}
+    : name(ValidateName(name)),
+      description(ValidateDescription(description)),
+      commands(std::map<std::string, Command>()) {}
 
 const std::string& App::ValidateName(const std::string& name) const {
   if (name.empty()) {

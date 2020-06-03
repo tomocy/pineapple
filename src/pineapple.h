@@ -48,6 +48,7 @@ class App {
 
   std::string name;
   std::string description;
+  std::map<std::string, Command> commands;
 };
 }  // namespace pineapple
 
