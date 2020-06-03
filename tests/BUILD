@@ -8,12 +8,3 @@ cc_test(
         "@gtest//:gtest_main",
     ],
 )
-
-cc_test(
-    name = "flag_lexer",
-    srcs = ["flag_lexer_test.cc"],
-    deps = [
-        "//src:flag_lexer",
-        "@gtest//:gtest_main",
-    ],
-)
