@@ -54,15 +54,20 @@ TEST(AppUsage, SuccessInWithDescription) {
 TEST(AppUsage, SuccessInWithCommands) {
   auto app = pineapple::App("app", "a cli app");
 
+  app.AddFlag(
+      flags::Flag("help", flags::Bool::Make(false), "print help message"));
+
   app.AddCommand(
       pineapple::Command("create", "create something", [](auto _) {}));
   app.AddCommand(
       pineapple::Command("delete", "delete something", [](auto _) {}));
 
-  EXPECT_EQ(R"(app - a cli app
+  EXPECT_EQ(R"###(app - a cli app
+Flags:
+--help bool  print help message (default: false)
 Commands:
 create  create something
-delete  delete something)",
+delete  delete something)###",
             app.Usage());
 }
 

@@ -79,6 +79,23 @@ std::string App::Usage() const noexcept {
     usage += " - " + description;
   }
 
+  if (flags.FlagSize() >= 1) {
+    usage += "\n";
+    usage += "Flags:\n";
+
+    usage += flags.Usage([](const auto& _, const auto& flags) {
+      auto usage = std::string("");
+
+      for (auto iter = std::begin(flags); iter != std::end(flags); ++iter) {
+        usage += iter->second.Usage() + "\n";
+      }
+
+      return usage;
+    });
+
+    usage = usage.erase(usage.size() - 1, 1);
+  }
+
   if (!commands.empty()) {
     usage += "\n";
     usage += "Commands:\n";
