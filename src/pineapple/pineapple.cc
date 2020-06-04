@@ -69,6 +69,7 @@ App::App(const std::string& name, const std::string& description,
     : name(ValidateName(name)),
       description(ValidateDescription(description)),
       action(action),
+      flags(flags::FlagSet(name)),
       commands(std::map<std::string, Command>()) {}
 
 std::string App::Usage() const noexcept {

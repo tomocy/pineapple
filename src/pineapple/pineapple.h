@@ -7,6 +7,7 @@
 #include <tuple>
 #include <vector>
 
+#include "external/flags/src/flags/flags.h"
 #include "src/pineapple/exceptions.h"
 
 namespace pineapple {
@@ -74,6 +75,7 @@ class App {
   std::string name;
   std::string description;
   action_t action;
+  flags::FlagSet flags;
   std::map<std::string, Command> commands;
 };
 }  // namespace pineapple
