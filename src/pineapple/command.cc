@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "external/flags/src/flags/flags.h"
+#include "src/pineapple/context.h"
 #include "src/pineapple/exceptions.h"
 
 namespace pineapple {
@@ -37,7 +38,9 @@ void Command::Run(const std::vector<std::string>& args) const {
   auto trimmed = std::vector<std::string>(std::begin(args) + 1, std::end(args));
   flags.Parse(trimmed);
 
-  action(flags.Args());
+  auto ctx = Context(std::move(flags));
+
+  action(ctx);
 }
 
 const std::string& Command::ValidateName(const std::string& name) const {

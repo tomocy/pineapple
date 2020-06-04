@@ -22,6 +22,7 @@ cc_library(
     hdrs = ["app.h"],
     deps = [
         "//src/pineapple:command",
+        "//src/pineapple:context",
         "//src/pineapple:exceptions",
         "@flags//src/flags",
     ],
@@ -32,6 +33,7 @@ cc_library(
     srcs = ["command.cc"],
     hdrs = ["command.h"],
     deps = [
+        "//src/pineapple:context",
         "//src/pineapple:exceptions",
         "@flags//src/flags",
     ],

@@ -5,10 +5,14 @@
 #include <string>
 #include <vector>
 
+#include "src/pineapple/context.h"
+
 namespace pineapple {
 class Command {
  public:
-  using action_t = std::function<void(const std::vector<std::string>& args)>;
+  using const_action_ctx_t = const Context&;
+
+  using action_t = std::function<void(const_action_ctx_t ctx)>;
 
   Command() = default;
 

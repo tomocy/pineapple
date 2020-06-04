@@ -8,12 +8,15 @@
 #include "external/gtest/googletest/include/gtest/gtest.h"
 
 TEST(Command, Success) {
-  EXPECT_NO_THROW(pineapple::Command("do", "do something", [](auto args) {}));
+  EXPECT_NO_THROW(pineapple::Command(
+      "do", "do something", [](pineapple::Command::const_action_ctx_t _) {}));
 }
 
 TEST(Command, FailedDueToEmptyName) {
-  EXPECT_THROW(pineapple::Command("", "do something", [](auto args) {}),
-               pineapple::Exception);
+  EXPECT_THROW(
+      pineapple::Command("", "do something",
+                         [](pineapple::Command::const_action_ctx_t _) {}),
+      pineapple::Exception);
 }
 
 TEST(Command, FailedDueToNoAction) {
@@ -22,21 +25,24 @@ TEST(Command, FailedDueToNoAction) {
 }
 
 TEST(CommandUsage, Success) {
-  auto cmd = pineapple::Command("do", "do something", [](auto args) {});
+  auto cmd = pineapple::Command(
+      "do", "do something", [](pineapple::Command::const_action_ctx_t _) {});
 
   EXPECT_EQ("do  do something", cmd.Usage());
 }
 
 TEST(CommandOutline, Success) {
-  auto cmd = pineapple::Command("do", "do something", [](auto args) {});
+  auto cmd = pineapple::Command(
+      "do", "do something", [](pineapple::Command::const_action_ctx_t _) {});
 
   EXPECT_EQ("do  do something", cmd.Outline());
 }
 
 TEST(CommandRun, SuccessInWithoutArgs) {
   auto called = false;
-  auto cmd = pineapple::Command("do", "do something",
-                                [&called](auto _) { called = true; });
+  auto cmd = pineapple::Command(
+      "do", "do something",
+      [&called](pineapple::Command::const_action_ctx_t _) { called = true; });
 
   EXPECT_NO_THROW(cmd.Run(std::vector<std::string>{"do"}));
 
@@ -45,13 +51,17 @@ TEST(CommandRun, SuccessInWithoutArgs) {
 
 TEST(CommandRun, SuccessInWithArgs) {
   auto cmd_args = std::string("");
-  auto cmd = pineapple::Command("do", "do something", [&cmd_args](auto args) {
-    std::ostringstream joined;
-    std::copy(std::begin(args), std::end(args),
-              std::ostream_iterator<std::string>(joined, ","));
+  auto cmd = pineapple::Command(
+      "do", "do something",
+      [&cmd_args](pineapple::Command::const_action_ctx_t ctx) {
+        auto args = ctx.Args();
 
-    cmd_args = joined.str();
-  });
+        std::ostringstream joined;
+        std::copy(std::begin(args), std::end(args),
+                  std::ostream_iterator<std::string>(joined, ","));
+
+        cmd_args = joined.str();
+      });
 
   EXPECT_NO_THROW(
       cmd.Run(std::vector<std::string>{"do", "a", "b", "c,d", "e"}));
@@ -60,15 +70,17 @@ TEST(CommandRun, SuccessInWithArgs) {
 }
 
 TEST(CommandRun, FailedDueToInsufficientArgs) {
-  auto cmd = pineapple::Command("do", "do something", [](auto _) {});
+  auto cmd = pineapple::Command(
+      "do", "do something", [](pineapple::Command::const_action_ctx_t _) {});
 
   EXPECT_THROW(cmd.Run(std::vector<std::string>{}), pineapple::Exception);
 }
 
 TEST(CommandRun, FailedDueToExceptionFromAction) {
-  auto cmd = pineapple::Command("do", "do something", [](auto _) {
-    throw pineapple::Exception("an exception from action");
-  });
+  auto cmd = pineapple::Command(
+      "do", "do something", [](pineapple::Command::const_action_ctx_t _) {
+        throw pineapple::Exception("an exception from action");
+      });
 
   EXPECT_THROW(cmd.Run(std::vector<std::string>{"do"}), pineapple::Exception);
 }
@@ -98,9 +110,11 @@ TEST(AppUsage, SuccessInWithCommands) {
       flags::Flag("help", flags::Bool::Make(false), "print help message"));
 
   app.AddCommand(
-      pineapple::Command("create", "create something", [](auto _) {}));
+      pineapple::Command("create", "create something",
+                         [](pineapple::Command::const_action_ctx_t _) {}));
   app.AddCommand(
-      pineapple::Command("delete", "delete something", [](auto _) {}));
+      pineapple::Command("delete", "delete something",
+                         [](pineapple::Command::const_action_ctx_t _) {}));
 
   EXPECT_EQ(R"###(app - a cli app
 Flags:
@@ -129,14 +143,15 @@ TEST(AppAddFlag, FailedDueToDuplicatedFlags) {
 TEST(AppAddCommand, Success) {
   auto app = pineapple::App("app", "a cli app");
 
-  EXPECT_NO_THROW(app.AddCommand(
-      pineapple::Command("do", "do somethiing", [](auto args) {})));
+  EXPECT_NO_THROW(app.AddCommand(pineapple::Command(
+      "do", "do somethiing", [](pineapple::Command::const_action_ctx_t _) {})));
 }
 
 TEST(AppAddCommand, FailedDueToDuplicatedCommands) {
   auto app = pineapple::App("app", "a cli app");
 
-  auto cmd = pineapple::Command("do", "do somethiing", [](auto args) {});
+  auto cmd = pineapple::Command(
+      "do", "do somethiing", [](pineapple::Command::const_action_ctx_t _) {});
 
   app.AddCommand(cmd);
 
@@ -151,8 +166,9 @@ TEST(AppRun, Success) {
 
 TEST(AppRun, SuccessInActionWithoutArgs) {
   auto called = false;
-  auto app =
-      pineapple::App("app", "a cli app", [&called](auto _) { called = true; });
+  auto app = pineapple::App(
+      "app", "a cli app",
+      [&called](pineapple::App::const_action_ctx_t _) { called = true; });
 
   EXPECT_NO_THROW(
       app.Run(std::vector<std::string>{"/app", "a", "b", "c,d", "e"}));
@@ -162,13 +178,16 @@ TEST(AppRun, SuccessInActionWithoutArgs) {
 
 TEST(AppRun, SuccessInActionWithArgs) {
   auto app_args = std::string("");
-  auto app = pineapple::App("app", "a cli app", [&app_args](auto args) {
-    std::ostringstream joined;
-    std::copy(std::begin(args), std::end(args),
-              std::ostream_iterator<std::string>(joined, ","));
+  auto app = pineapple::App(
+      "app", "a cli app", [&app_args](pineapple::App::const_action_ctx_t ctx) {
+        auto args = ctx.Args();
 
-    app_args = joined.str();
-  });
+        std::ostringstream joined;
+        std::copy(std::begin(args), std::end(args),
+                  std::ostream_iterator<std::string>(joined, ","));
+
+        app_args = joined.str();
+      });
 
   EXPECT_NO_THROW(
       app.Run(std::vector<std::string>{"/app", "a", "b", "c,d", "e"}));
@@ -180,8 +199,9 @@ TEST(AppRun, SuccessInCommandWithoutArgs) {
   auto app = pineapple::App("app", "a cli app");
 
   auto called = false;
-  app.AddCommand(pineapple::Command("do", "do something",
-                                    [&called](auto _) { called = true; }));
+  app.AddCommand(pineapple::Command(
+      "do", "do something",
+      [&called](pineapple::Command::const_action_ctx_t _) { called = true; }));
 
   EXPECT_NO_THROW(app.Run(std::vector<std::string>{"/app", "do"}));
 
@@ -192,8 +212,11 @@ TEST(AppRun, SuccessInCommandWithArgs) {
   auto app = pineapple::App("app", "a cli app");
 
   auto do_args = std::string("");
-  app.AddCommand(
-      pineapple::Command("do", "do something", [&do_args](auto args) {
+  app.AddCommand(pineapple::Command(
+      "do", "do something",
+      [&do_args](pineapple::Command::const_action_ctx_t ctx) {
+        auto args = ctx.Args();
+
         std::ostringstream joined;
         std::copy(std::begin(args), std::end(args),
                   std::ostream_iterator<std::string>(joined, ","));
@@ -223,9 +246,10 @@ TEST(AppRun, FailedDueToUnknownCommand) {
 TEST(AppRun, FailedDueToExceptionFromCommand) {
   auto app = pineapple::App("app", "a cli app");
 
-  app.AddCommand(pineapple::Command("do", "do something", [](auto _) {
-    throw pineapple::Exception("something wrong");
-  }));
+  app.AddCommand(pineapple::Command(
+      "do", "do something", [](pineapple::Command::const_action_ctx_t _) {
+        throw pineapple::Exception("something wrong");
+      }));
 
   EXPECT_THROW(app.Run(std::vector<std::string>{"/app", "do"}),
                pineapple::Exception);

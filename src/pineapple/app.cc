@@ -6,6 +6,7 @@
 
 #include "external/flags/src/flags/flags.h"
 #include "src/pineapple/command.h"
+#include "src/pineapple/context.h"
 #include "src/pineapple/exceptions.h"
 
 namespace pineapple {
@@ -66,21 +67,21 @@ void App::Run(const std::vector<std::string>& args) const {
   auto trimmed = std::vector<std::string>(std::begin(args) + 1, std::end(args));
   flags.Parse(trimmed);
 
-  auto parsed = flags.Args();
+  auto ctx = Context(std::move(flags));
 
-  if (parsed.size() >= 1 && DoHaveCommand(parsed.at(0))) {
-    RunCommand(parsed);
+  if (ctx.Args().size() >= 1 && DoHaveCommand(ctx.Args().at(0))) {
+    RunCommand(ctx.Args());
     return;
   }
 
-  if (parsed.empty() || action != nullptr) {
-    DoAction(parsed);
+  if (ctx.Args().empty() || action != nullptr) {
+    DoAction(ctx);
     return;
   }
 
-  throw Exception("argument\"" + parsed.at(0) +
+  throw Exception("argument\"" + ctx.Args().at(0) +
                   "\" is not handled at all: action or command named \"" +
-                  parsed.at(0) + "\" is needed");
+                  ctx.Args().at(0) + "\" is needed");
 }
 
 const std::string& App::ValidateName(const std::string& name) const {
@@ -122,12 +123,12 @@ std::string App::CommandsUsage() const noexcept {
   return usage.erase(usage.size() - 1, 1);
 }
 
-void App::DoAction(const std::vector<std::string>& args) const {
+void App::DoAction(const Context& ctx) const {
   if (action == nullptr) {
     return;
   }
 
-  action(args);
+  action(ctx);
 }
 
 void App::RunCommand(const std::vector<std::string>& args) const {
