@@ -25,7 +25,7 @@ class Command {
 
   std::string Outline() const noexcept;
 
-  void Run(const std::vector<std::string>& args) const;
+  void Run(Context&& ctx) const;
 
  private:
   const std::string& ValidateName(const std::string& name) const;

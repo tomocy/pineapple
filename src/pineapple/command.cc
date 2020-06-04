@@ -27,18 +27,19 @@ std::string Command::Outline() const noexcept {
   return usage;
 }
 
-void Command::Run(const std::vector<std::string>& args) const {
-  if (args.size() < 1) {
+void Command::Run(Context&& ctx) const {
+  if (ctx.Args().size() < 1) {
     throw Exception(
         "insufficient arguments: one argument is required at least");
   }
 
   auto flags = flags::FlagSet(name);
 
-  auto trimmed = std::vector<std::string>(std::begin(args) + 1, std::end(args));
+  auto trimmed = std::vector<std::string>(std::begin(ctx.Args()) + 1,
+                                          std::end(ctx.Args()));
   flags.Parse(trimmed);
 
-  auto ctx = Context(std::move(flags));
+  ctx = Context(std::move(ctx), std::move(flags));
 
   action(ctx);
 }

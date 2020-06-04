@@ -44,7 +44,7 @@ class App {
 
   void DoAction(const Context& ctx) const;
 
-  void RunCommand(const std::vector<std::string>& args) const;
+  void RunCommand(Context&& args) const;
 
   bool DoHaveCommand(const std::string& name) const noexcept;
 

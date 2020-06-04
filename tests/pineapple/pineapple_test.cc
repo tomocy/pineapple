@@ -44,7 +44,11 @@ TEST(CommandRun, SuccessInWithoutArgs) {
       "do", "do something",
       [&called](pineapple::Command::const_action_ctx_t _) { called = true; });
 
-  EXPECT_NO_THROW(cmd.Run(std::vector<std::string>{"do"}));
+  auto flags = flags::FlagSet("do");
+
+  flags.Parse(std::vector<std::string>{"do"});
+
+  EXPECT_NO_THROW(cmd.Run(pineapple::Context(std::move(flags))));
 
   EXPECT_TRUE(called);
 }
@@ -63,8 +67,11 @@ TEST(CommandRun, SuccessInWithArgs) {
         cmd_args = joined.str();
       });
 
-  EXPECT_NO_THROW(
-      cmd.Run(std::vector<std::string>{"do", "a", "b", "c,d", "e"}));
+  auto flags = flags::FlagSet("do");
+
+  flags.Parse(std::vector<std::string>{"do", "a", "b", "c,d", "e"});
+
+  EXPECT_NO_THROW(cmd.Run(pineapple::Context(std::move(flags))));
 
   EXPECT_EQ("a,b,c,d,e,", cmd_args);
 }
@@ -73,7 +80,12 @@ TEST(CommandRun, FailedDueToInsufficientArgs) {
   auto cmd = pineapple::Command(
       "do", "do something", [](pineapple::Command::const_action_ctx_t _) {});
 
-  EXPECT_THROW(cmd.Run(std::vector<std::string>{}), pineapple::Exception);
+  auto flags = flags::FlagSet("do");
+
+  flags.Parse(std::vector<std::string>{});
+
+  EXPECT_THROW(cmd.Run(pineapple::Context(std::move(flags))),
+               pineapple::Exception);
 }
 
 TEST(CommandRun, FailedDueToExceptionFromAction) {
@@ -82,7 +94,12 @@ TEST(CommandRun, FailedDueToExceptionFromAction) {
         throw pineapple::Exception("an exception from action");
       });
 
-  EXPECT_THROW(cmd.Run(std::vector<std::string>{"do"}), pineapple::Exception);
+  auto flags = flags::FlagSet("do");
+
+  flags.Parse(std::vector<std::string>{"do"});
+
+  EXPECT_THROW(cmd.Run(pineapple::Context(std::move(flags))),
+               pineapple::Exception);
 }
 
 TEST(App, Success) { EXPECT_NO_THROW(pineapple::App("app", "a cli app")); }

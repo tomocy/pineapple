@@ -68,7 +68,7 @@ void App::Run(const std::vector<std::string>& args) {
   auto ctx = Context(std::move(flags));
 
   if (ctx.Args().size() >= 1 && DoHaveCommand(ctx.Args().at(0))) {
-    RunCommand(ctx.Args());
+    RunCommand(std::move(ctx));
     return;
   }
 
@@ -129,18 +129,18 @@ void App::DoAction(const Context& ctx) const {
   action(ctx);
 }
 
-void App::RunCommand(const std::vector<std::string>& args) const {
-  if (args.size() < 1) {
+void App::RunCommand(Context&& ctx) const {
+  if (ctx.Args().size() < 1) {
     throw Exception("command name should be provided");
   }
 
-  auto name = args.at(0);
+  auto name = ctx.Args().at(0);
 
   if (!DoHaveCommand(name)) {
     throw Exception("unknown command: command \"" + name + "\" is not added");
   }
 
-  commands.at(name).Run(args);
+  commands.at(name).Run(std::move(ctx));
 }
 
 bool App::DoHaveCommand(const std::string& name) const noexcept {
