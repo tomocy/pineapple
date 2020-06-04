@@ -191,8 +191,7 @@ void App::DoAction(const std::vector<std::string>& args) const {
 
 void App::RunCommand(const std::vector<std::string>& args) const {
   if (args.size() < 1) {
-    throw Exception(
-        "insufficient arguments: one argument is required at least");
+    throw Exception("command name should be provided");
   }
 
   auto name = args.at(0);
