@@ -10,6 +10,7 @@ cc_library(
     deps = [
         "//src/pineapple:app",
         "//src/pineapple:command",
+        "//src/pineapple:context",
         "//src/pineapple:exceptions",
         "@flags//src/flags",
     ],

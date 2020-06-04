@@ -230,3 +230,15 @@ TEST(AppRun, FailedDueToExceptionFromCommand) {
   EXPECT_THROW(app.Run(std::vector<std::string>{"/app", "do"}),
                pineapple::Exception);
 }
+
+TEST(ContextArgs, Success) {
+  auto flags = flags::FlagSet("flags");
+
+  auto args = std::vector<std::string>{"a", "b", "c,d", "e"};
+
+  flags.Parse(args);
+
+  auto ctx = pineapple::Context(std::move(flags));
+
+  EXPECT_EQ(args, ctx.Args());
+}

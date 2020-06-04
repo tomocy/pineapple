@@ -4,6 +4,7 @@
 #include "external/flags/src/flags/flags.h"
 #include "src/pineapple/app.h"
 #include "src/pineapple/command.h"
+#include "src/pineapple/context.h"
 #include "src/pineapple/exceptions.h"
 
 #endif
