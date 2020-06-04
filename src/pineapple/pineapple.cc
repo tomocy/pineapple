@@ -93,6 +93,8 @@ std::string App::Usage() const noexcept {
   return usage;
 }
 
+void App::AddFlag(flags::Flag&& flag) { flags.AddFlag(std::move(flag)); }
+
 void App::AddCommand(const Command& command) {
   if (commands.find(command.Name()) != commands.end()) {
     throw Exception("command \"" + command.Name() + "\" is already added");

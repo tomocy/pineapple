@@ -66,6 +66,21 @@ delete  delete something)",
             app.Usage());
 }
 
+TEST(AppAddFlag, Success) {
+  auto app = pineapple::App("app", "a cli app");
+
+  EXPECT_NO_THROW(app.AddFlag(flags::Flag("aaa", flags::String::Make(""))));
+}
+
+TEST(AppAddFlag, FailedDueToDuplicatedFlags) {
+  auto app = pineapple::App("app", "a cli app");
+
+  app.AddFlag(flags::Flag("aaa", flags::String::Make("")));
+
+  EXPECT_THROW(app.AddFlag(flags::Flag("aaa", flags::String::Make(""))),
+               flags::Exception);
+}
+
 TEST(AppAddCommand, Success) {
   auto app = pineapple::App("app", "a cli app");
 

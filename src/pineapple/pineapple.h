@@ -57,6 +57,8 @@ class App {
 
   std::string Usage() const noexcept;
 
+  void AddFlag(flags::Flag&& flag);
+
   void AddCommand(const Command& command);
 
   void Run(const std::vector<std::string>& args) const;
