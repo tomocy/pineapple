@@ -33,6 +33,46 @@ TEST(CommandOutline, Success) {
   EXPECT_EQ("do  do something", cmd.Outline());
 }
 
+TEST(CommandRun, SuccessInWithoutArgs) {
+  auto called = false;
+  auto cmd = pineapple::Command("do", "do something",
+                                [&called](auto _) { called = true; });
+
+  EXPECT_NO_THROW(cmd.Run(std::vector<std::string>{"do"}));
+
+  EXPECT_TRUE(called);
+}
+
+TEST(CommandRun, SuccessInWithArgs) {
+  auto cmd_args = std::string("");
+  auto cmd = pineapple::Command("do", "do something", [&cmd_args](auto args) {
+    std::ostringstream joined;
+    std::copy(std::begin(args), std::end(args),
+              std::ostream_iterator<std::string>(joined, ","));
+
+    cmd_args = joined.str();
+  });
+
+  EXPECT_NO_THROW(
+      cmd.Run(std::vector<std::string>{"do", "a", "b", "c,d", "e"}));
+
+  EXPECT_EQ("a,b,c,d,e,", cmd_args);
+}
+
+TEST(CommandRun, FailedDueToInsufficientArgs) {
+  auto cmd = pineapple::Command("do", "do something", [](auto _) {});
+
+  EXPECT_THROW(cmd.Run(std::vector<std::string>{}), pineapple::Exception);
+}
+
+TEST(CommandRun, FailedDueToExceptionFromAction) {
+  auto cmd = pineapple::Command("do", "do something", [](auto _) {
+    throw pineapple::Exception("an exception from action");
+  });
+
+  EXPECT_THROW(cmd.Run(std::vector<std::string>{"do"}), pineapple::Exception);
+}
+
 TEST(App, Success) { EXPECT_NO_THROW(pineapple::App("app", "a cli app")); }
 
 TEST(App, FailedDueToEmptyName) {

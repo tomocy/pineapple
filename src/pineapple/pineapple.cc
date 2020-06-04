@@ -30,7 +30,19 @@ std::string Command::Outline() const noexcept {
   return usage;
 }
 
-void Command::Run(const std::vector<std::string>& args) const { action(args); }
+void Command::Run(const std::vector<std::string>& args) const {
+  if (args.size() < 1) {
+    throw Exception(
+        "insufficient arguments: one argument is required at least");
+  }
+
+  auto flags = flags::FlagSet(name);
+
+  auto trimmed = std::vector<std::string>(std::begin(args) + 1, std::end(args));
+  flags.Parse(trimmed);
+
+  action(flags.Args());
+}
 
 const std::string& Command::ValidateName(const std::string& name) const {
   if (name.empty()) {
@@ -189,9 +201,7 @@ void App::RunCommand(const std::vector<std::string>& args) const {
     throw Exception("unknown command: command \"" + name + "\" is not added");
   }
 
-  auto trimmed = std::vector<std::string>(std::begin(args) + 1, std::end(args));
-
-  commands.at(name).Run(trimmed);
+  commands.at(name).Run(args);
 }
 
 bool App::DoHaveCommand(const std::string& name) const noexcept {
