@@ -1,4 +1,4 @@
-#include "src/pineapple.h"
+#include "src/pineapple/pineapple.h"
 
 #include <functional>
 #include <iostream>
@@ -7,8 +7,8 @@
 #include <tuple>
 #include <vector>
 
-#include "external/flags/src/flags.h"
-#include "src/exceptions.h"
+#include "external/flags/src/flags/flags.h"
+#include "src/pineapple/exceptions.h"
 
 namespace pineapple {
 Command::Command(const std::string& name, const std::string& description,

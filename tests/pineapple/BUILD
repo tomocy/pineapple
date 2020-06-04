@@ -4,7 +4,7 @@ cc_test(
     name = "pineapple",
     srcs = ["pineapple_test.cc"],
     deps = [
-        "//src:pineapple",
+        "//src/pineapple",
         "@gtest//:gtest_main",
     ],
 )

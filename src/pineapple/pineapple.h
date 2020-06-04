@@ -1,5 +1,5 @@
-#ifndef TOMOCY_PINEAPPLE_H
-#define TOMOCY_PINEAPPLE_H
+#ifndef TOMOCY_PINEAPPLE_PINEAPPLE_PINEAPPLE_H
+#define TOMOCY_PINEAPPLE_PINEAPPLE_PINEAPPLE_H
 
 #include <functional>
 #include <map>
@@ -7,7 +7,7 @@
 #include <tuple>
 #include <vector>
 
-#include "src/exceptions.h"
+#include "src/pineapple/exceptions.h"
 
 namespace pineapple {
 using action_t = std::function<void(const std::vector<std::string>& args)>;

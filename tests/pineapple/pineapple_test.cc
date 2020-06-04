@@ -1,4 +1,4 @@
-#include "src/pineapple.h"
+#include "src/pineapple/pineapple.h"
 
 #include <iostream>
 #include <sstream>

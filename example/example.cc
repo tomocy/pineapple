@@ -1,6 +1,6 @@
 #include <string>
 #include <vector>
 
-#include "src/pineapple.h"
+#include "src/pineapple/pineapple.h"
 
 int main() { return 0; }

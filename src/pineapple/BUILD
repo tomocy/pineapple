@@ -6,11 +6,11 @@ cc_library(
     hdrs = ["pineapple.h"],
     visibility = [
         "//example:__pkg__",
-        "//tests:__pkg__",
+        "//tests/pineapple:__pkg__",
     ],
     deps = [
-        "exceptions",
-        "@flags//src:flags",
+        "//src/pineapple:exceptions",
+        "@flags//src/flags",
     ],
 )
 
