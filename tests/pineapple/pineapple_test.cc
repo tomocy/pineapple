@@ -269,6 +269,19 @@ TEST(AppRun, FailedDueToExceptionFromCommand) {
                pineapple::Exception);
 }
 
+TEST(ContextParent, SuccessInWithoutParent) {
+  auto flags = flags::FlagSet("parent");
+
+  flags.AddFlag(flags::Flag("aaa", flags::String::Make("")));
+
+  flags.Parse(std::vector<std::string>{"--aaa", "123", "child", "--bbb"});
+
+  auto ctx = pineapple::Context(std::move(flags));
+
+  EXPECT_EQ("123", ctx.Flag("aaa").Get<std::string>());
+  EXPECT_EQ(nullptr, ctx.Parent());
+}
+
 TEST(ContextArgs, Success) {
   auto flags = flags::FlagSet("flags");
 

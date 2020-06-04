@@ -8,6 +8,10 @@
 namespace pineapple {
 Context::Context(flags::FlagSet&& flags) noexcept : flags(std::move(flags)) {}
 
+const typename Context::parent_t& Context::Parent() const noexcept {
+  return parent;
+}
+
 const flags::Flag& Context::Flag(const std::string& name) const {
   return flags.GetFlag(name);
 }
