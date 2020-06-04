@@ -81,30 +81,12 @@ std::string App::Usage() const noexcept {
 
   if (flags.FlagSize() >= 1) {
     usage += "\n";
-    usage += "Flags:\n";
-
-    usage += flags.Usage([](const auto& _, const auto& flags) {
-      auto usage = std::string("");
-
-      for (auto iter = std::begin(flags); iter != std::end(flags); ++iter) {
-        usage += iter->second.Usage() + "\n";
-      }
-
-      return usage;
-    });
-
-    usage = usage.erase(usage.size() - 1, 1);
+    usage += FlagsUsage();
   }
 
   if (!commands.empty()) {
     usage += "\n";
-    usage += "Commands:\n";
-
-    for (auto [_, cmd] : commands) {
-      usage += cmd.Outline() + "\n";
-    }
-
-    usage = usage.erase(usage.size() - 1, 1);
+    usage += CommandsUsage();
   }
 
   return usage;
@@ -164,6 +146,32 @@ const std::string& App::ValidateName(const std::string& name) const {
 const std::string& App::ValidateDescription(
     const std::string& description) const {
   return description;
+}
+
+std::string App::FlagsUsage() const noexcept {
+  auto usage = std::string("Flags:\n");
+
+  usage += flags.Usage([](const auto& _, const auto& flags) {
+    auto usage = std::string("");
+
+    for (auto iter = std::begin(flags); iter != std::end(flags); ++iter) {
+      usage += iter->second.Usage() + "\n";
+    }
+
+    return usage;
+  });
+
+  return usage.erase(usage.size() - 1, 1);
+}
+
+std::string App::CommandsUsage() const noexcept {
+  auto usage = std::string("Commands:\n");
+
+  for (auto [_, cmd] : commands) {
+    usage += cmd.Outline() + "\n";
+  }
+
+  return usage.erase(usage.size() - 1, 1);
 }
 
 void App::DoAction(const std::vector<std::string>& args) const {

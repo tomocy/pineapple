@@ -68,6 +68,10 @@ class App {
 
   const std::string& ValidateDescription(const std::string& description) const;
 
+  std::string FlagsUsage() const noexcept;
+
+  std::string CommandsUsage() const noexcept;
+
   void DoAction(const std::vector<std::string>& args) const;
 
   void RunCommand(const std::vector<std::string>& args) const;
