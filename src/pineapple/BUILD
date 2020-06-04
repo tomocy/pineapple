@@ -37,6 +37,12 @@ cc_library(
 )
 
 cc_library(
+    name = "context",
+    srcs = ["context.cc"],
+    hdrs = ["context.h"],
+)
+
+cc_library(
     name = "exceptions",
     srcs = ["exceptions.cc"],
     hdrs = ["exceptions.h"],
