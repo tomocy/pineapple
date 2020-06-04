@@ -1,13 +1,11 @@
-#include "src/pineapple/pineapple.h"
+#include "src/pineapple/app.h"
 
-#include <functional>
-#include <iostream>
 #include <map>
 #include <string>
-#include <tuple>
 #include <vector>
 
 #include "external/flags/src/flags/flags.h"
+#include "src/pineapple/command.h"
 #include "src/pineapple/exceptions.h"
 
 namespace pineapple {
