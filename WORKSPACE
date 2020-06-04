@@ -9,7 +9,7 @@ http_archive(
 
 http_archive(
     name = "flags",
-    sha256 = "357a7802484e783c61a3421a42f42dbc507e2a578f972acf0ad4705611ae395c",
-    strip_prefix = "cpp-flags-1.0",
-    url = "https://github.com/tomocy/cpp-flags/archive/v1.0.zip",
+    sha256 = "5da3ddda4ccb87285c3855a08c77475948b25f55804da02dd1151a583f2cfb7b",
+    strip_prefix = "cpp-flags-1.2",
+    url = "https://github.com/tomocy/cpp-flags/archive/v1.2.zip",
 )
