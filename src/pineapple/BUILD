@@ -40,6 +40,9 @@ cc_library(
     name = "context",
     srcs = ["context.cc"],
     hdrs = ["context.h"],
+    deps = [
+        "@flags//src/flags",
+    ],
 )
 
 cc_library(
