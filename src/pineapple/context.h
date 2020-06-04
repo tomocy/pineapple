@@ -11,6 +11,8 @@ class Context {
  public:
   Context(flags::FlagSet&& flags) noexcept;
 
+  const flags::Flag& Flag(const std::string& name) const;
+
   const std::vector<std::string>& Args() const noexcept;
 
  private:

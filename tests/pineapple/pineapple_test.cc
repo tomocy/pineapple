@@ -242,3 +242,15 @@ TEST(ContextArgs, Success) {
 
   EXPECT_EQ(args, ctx.Args());
 }
+
+TEST(ContextFlag, Success) {
+  auto flags = flags::FlagSet("flags");
+
+  flags.AddFlag(flags::Flag("aaa", flags::String::Make("")));
+
+  flags.Parse(std::vector<std::string>{"--aaa", "123"});
+
+  auto ctx = pineapple::Context(std::move(flags));
+
+  EXPECT_EQ("123", ctx.Flag("aaa").Get<std::string>());
+}
