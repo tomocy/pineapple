@@ -6,6 +6,10 @@
 #include "external/flags/src/flags/flags.h"
 
 namespace pineapple {
+Context::Context(Context&& parent, flags::FlagSet&& flags) noexcept
+    : parent(std::make_unique<Context>(std::move(parent))),
+      flags(std::move(flags)) {}
+
 Context::Context(flags::FlagSet&& flags) noexcept : flags(std::move(flags)) {}
 
 const typename Context::parent_t& Context::Parent() const noexcept {

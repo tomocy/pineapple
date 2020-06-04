@@ -12,6 +12,8 @@ class Context {
  public:
   using parent_t = std::unique_ptr<Context>;
 
+  Context(Context&& parent, flags::FlagSet&& flags) noexcept;
+
   Context(flags::FlagSet&& flags) noexcept;
 
   const parent_t& Parent() const noexcept;
