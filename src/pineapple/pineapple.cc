@@ -115,17 +115,12 @@ void App::Run(const std::vector<std::string>& args) const {
 
   auto parsed = flags.Args();
 
-  if (parsed.size() < 1) {
-    DoAction(parsed);
-    return;
-  }
-
-  if (DoHaveCommand(parsed.at(0))) {
+  if (parsed.size() >= 1 && DoHaveCommand(parsed.at(0))) {
     RunCommand(parsed);
     return;
   }
 
-  if (action != nullptr) {
+  if (parsed.empty() || action != nullptr) {
     DoAction(parsed);
     return;
   }
