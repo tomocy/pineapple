@@ -176,10 +176,17 @@ TEST(AppRun, SuccessInActionWithoutArgs) {
   EXPECT_TRUE(called);
 }
 
-TEST(AppRun, SuccessInActionWithArgs) {
+TEST(AppRun, SuccessInActionWithFlagAndArgs) {
+  auto app_aaa_flag = std::string("");
+  auto app_bbb_flag = false;
   auto app_args = std::string("");
   auto app = pineapple::App(
-      "app", "a cli app", [&app_args](pineapple::App::const_action_ctx_t ctx) {
+      "app", "a cli app",
+      [&app_aaa_flag, &app_bbb_flag,
+       &app_args](pineapple::App::const_action_ctx_t ctx) {
+        app_aaa_flag = ctx.Flag("aaa").Get<std::string>();
+        app_bbb_flag = ctx.Flag("bbb").Get<bool>();
+
         auto args = ctx.Args();
 
         std::ostringstream joined;
@@ -189,8 +196,15 @@ TEST(AppRun, SuccessInActionWithArgs) {
         app_args = joined.str();
       });
 
-  EXPECT_NO_THROW(
-      app.Run(std::vector<std::string>{"/app", "a", "b", "c,d", "e"}));
+  app.AddFlag(flags::Flag("aaa", flags::String::Make("")));
+  app.AddFlag(flags::Flag("bbb", flags::Bool::Make(false)));
+
+  EXPECT_NO_THROW(app.Run(std::vector<std::string>{
+      "/app", "--aaa", "123", "--bbb", "a", "b", "c,d", "e"}));
+
+  EXPECT_EQ("123", app_aaa_flag);
+
+  EXPECT_TRUE(app_bbb_flag);
 
   EXPECT_EQ("a,b,c,d,e,", app_args);
 }

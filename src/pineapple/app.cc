@@ -56,13 +56,11 @@ void App::AddCommand(const Command& command) {
   commands.emplace(command.Name(), command);
 }
 
-void App::Run(const std::vector<std::string>& args) const {
+void App::Run(const std::vector<std::string>& args) {
   if (args.size() < 1) {
     throw Exception(
         "insufficient arguments: one argument is required at least");
   }
-
-  auto flags = flags::FlagSet(name);
 
   auto trimmed = std::vector<std::string>(std::begin(args) + 1, std::end(args));
   flags.Parse(trimmed);

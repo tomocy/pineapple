@@ -31,7 +31,7 @@ class App {
 
   void AddCommand(const Command& command);
 
-  void Run(const std::vector<std::string>& args) const;
+  void Run(const std::vector<std::string>& args);
 
  private:
   const std::string& ValidateName(const std::string& name) const;
