@@ -261,6 +261,35 @@ TEST(AppRun, SuccessInCommandWithArgs) {
   EXPECT_EQ("a,b,c,d,e,", do_args);
 }
 
+TEST(AppRun, SuccessInCommandWithParentArgs) {
+  auto app = pineapple::App("app", "a cli app");
+
+  app.AddFlag(flags::Flag("aaa", flags::String::Make("")));
+
+  auto parent_aaa_flag = std::string("");
+  auto do_args = std::string("");
+  app.AddCommand(pineapple::Command(
+      "do", "do something",
+      [&parent_aaa_flag, &do_args](pineapple::Command::const_action_ctx_t ctx) {
+        parent_aaa_flag = ctx.Parent()->Flag("aaa").Get<std::string>();
+
+        auto args = ctx.Args();
+
+        std::ostringstream joined;
+        std::copy(std::begin(args), std::end(args),
+                  std::ostream_iterator<std::string>(joined, ","));
+
+        do_args = joined.str();
+      }));
+
+  EXPECT_NO_THROW(app.Run(std::vector<std::string>{"/app", "--aaa", "123", "do",
+                                                   "a", "b", "c,d", "e"}));
+
+  EXPECT_EQ("123", parent_aaa_flag);
+
+  EXPECT_EQ("a,b,c,d,e,", do_args);
+}
+
 TEST(AppRun, FailedDueToInsufficientArgs) {
   auto app = pineapple::App("app", "a cli app");
 
