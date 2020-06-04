@@ -8,40 +8,12 @@
 #include <vector>
 
 #include "external/flags/src/flags/flags.h"
+#include "src/pineapple/command.h"
 #include "src/pineapple/exceptions.h"
 
 namespace pineapple {
 using action_t = std::function<void(const std::vector<std::string>& args)>;
 }
-
-namespace pineapple {
-class Command {
- public:
-  Command() = default;
-
-  Command(const std::string& name, const std::string& description,
-          const action_t& action);
-
-  const std::string& Name() const noexcept;
-
-  std::string Usage() const noexcept;
-
-  std::string Outline() const noexcept;
-
-  void Run(const std::vector<std::string>& args) const;
-
- private:
-  const std::string& ValidateName(const std::string& name) const;
-
-  const std::string& ValidateDescription(const std::string& descriptoin) const;
-
-  const action_t& ValidateAction(const action_t& action) const;
-
-  std::string name;
-  std::string description;
-  action_t action;
-};
-}  // namespace pineapple
 
 namespace pineapple {
 class App {
