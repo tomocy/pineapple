@@ -16,6 +16,9 @@ Command::Command(const std::string& name) : Command(name, "", nullptr) {}
 Command::Command(const std::string& name, const std::string& description)
     : Command(name, description, nullptr) {}
 
+Command::Command(const std::string& name, const Command::action_t& action)
+    : Command(name, "", action) {}
+
 Command::Command(const std::string& name, const std::string& description,
                  const Command::action_t& action)
     : flags(flags::FlagSet("flags")),

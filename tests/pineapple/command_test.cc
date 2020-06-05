@@ -10,6 +10,19 @@ TEST(Command, Success) {
       "do", "do something", [](pineapple::Command::const_action_ctx_t _) {}));
 }
 
+TEST(Command, SuccessInOnlyWithName) {
+  EXPECT_NO_THROW(pineapple::Command("do"));
+}
+
+TEST(Command, SuccessInWithNameAndDescription) {
+  EXPECT_NO_THROW(pineapple::Command("do", "do something"));
+}
+
+TEST(Command, SuccessInWithNameAndAction) {
+  EXPECT_NO_THROW(pineapple::Command(
+      "do", [](pineapple::Command::const_action_ctx_t _) {}));
+}
+
 TEST(Command, FailedDueToEmptyName) {
   EXPECT_THROW(
       pineapple::Command("", "do something",

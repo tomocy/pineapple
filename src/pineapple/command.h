@@ -22,6 +22,8 @@ class Command {
 
   Command(const std::string& name, const std::string& description);
 
+  Command(const std::string& name, const action_t& action);
+
   Command(const std::string& name, const std::string& description,
           const action_t& action);
 
