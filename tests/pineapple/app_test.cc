@@ -234,3 +234,12 @@ TEST(AppRun, FailedDueToExceptionFromCommandInCommand) {
   EXPECT_THROW(app.Run(std::vector<std::string>{"./app", "do", "a"}),
                pineapple::Exception);
 }
+
+TEST(AppRun, FailedDueToFlagException) {
+  auto app = pineapple::App("app");
+
+  app.AddFlag(flags::Flag("aaa", flags::String::Make("")));
+
+  EXPECT_THROW(app.Run(std::vector<std::string>{"./app", "--aaa"}),
+               pineapple::Exception);
+}

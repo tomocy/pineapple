@@ -34,7 +34,12 @@ void App::Run(const std::vector<std::string>& args) {
   }
 
   auto trimmed = std::vector<std::string>(std::begin(args) + 1, std::end(args));
-  flags.Parse(trimmed);
+
+  try {
+    flags.Parse(trimmed);
+  } catch (const flags::Exception& e) {
+    throw Exception(e.What());
+  }
 
   auto ctx = Context(flags);
 
