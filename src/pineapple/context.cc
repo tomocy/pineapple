@@ -19,6 +19,15 @@ Context::Context(const flags::FlagSet& flags) noexcept
 Context::Context(parent_t&& parent, const flags::FlagSet& flags) noexcept
     : parent(std::move(parent)), flags(flags) {}
 
+const flags::Flag& Context::GlobalFlag(const std::string& name) const {
+  auto [flag, ok] = TryToGetGlobalFlag(name);
+  if (!ok) {
+    throw Exception("flag \"" + name + "\" is not added globally");
+  }
+
+  return flag;
+}
+
 std::tuple<const flags::Flag&, bool> Context::TryToGetGlobalFlag(
     const std::string& name) const {
   if (parent == nullptr) {

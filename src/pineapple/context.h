@@ -19,7 +19,10 @@ class Context {
 
   Context(parent_t&& parent, const flags::FlagSet& flags) noexcept;
 
-  std::tuple<const flags::Flag&, bool> TryToGetGlobalFlag(const std::string& name) const;
+  const flags::Flag& GlobalFlag(const std::string& name) const;
+
+  std::tuple<const flags::Flag&, bool> TryToGetGlobalFlag(
+      const std::string& name) const;
 
   const parent_t& Parent() const noexcept;
 
