@@ -83,7 +83,11 @@ void Command::Run(Context&& parent) {
   auto trimmed = std::vector<std::string>(std::begin(parent.Args()) + 1,
                                           std::end(parent.Args()));
 
-  flags.Parse(trimmed);
+  try {
+    flags.Parse(trimmed);
+  } catch (const flags::Exception& e) {
+    throw Exception(e.What());
+  }
 
   auto ctx = Context(Context::Make(std::move(parent)), flags);
 

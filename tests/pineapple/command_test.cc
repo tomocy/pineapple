@@ -269,3 +269,16 @@ TEST(CommandRun, FailedDueToExceptionFromCommand) {
 
   EXPECT_THROW(cmd.Run(pineapple::Context(flags)), pineapple::Exception);
 }
+
+TEST(CommandRun, FailedDueToFlagException) {
+  auto cmd = pineapple::Command(
+      "cmd", "a command", [](pineapple::Command::const_action_ctx_t _) {});
+
+  cmd.AddFlag(flags::Flag("aaa", flags::String::Make("")));
+
+  auto flags = flags::FlagSet("cmd");
+
+  flags.Parse(std::vector<std::string>{"cmd", "--aaa"});
+
+  EXPECT_THROW(cmd.Run(pineapple::Context(flags)), pineapple::Exception);
+}
