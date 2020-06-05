@@ -51,6 +51,23 @@ TEST(CommandRun, SuccessInWithoutArgs) {
   EXPECT_TRUE(called);
 }
 
+TEST(CommandAddFlag, Success) {
+  auto cmd = pineapple::Command(
+      "app", "a cli app", [](pineapple::Command::const_action_ctx_t _) {});
+
+  EXPECT_NO_THROW(cmd.AddFlag(flags::Flag("aaa", flags::String::Make(""))));
+}
+
+TEST(CommandAddFlag, FailedDueToDuplicatedFlags) {
+  auto cmd = pineapple::Command(
+      "app", "a cli app", [](pineapple::Command::const_action_ctx_t _) {});
+
+  cmd.AddFlag(flags::Flag("aaa", flags::String::Make("")));
+
+  EXPECT_THROW(cmd.AddFlag(flags::Flag("aaa", flags::String::Make(""))),
+               flags::Exception);
+}
+
 TEST(CommandRun, SuccessInWithArgs) {
   auto cmd_args = std::string("");
   auto cmd = pineapple::Command(

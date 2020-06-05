@@ -31,6 +31,8 @@ std::string Command::Outline() const noexcept {
   return usage;
 }
 
+void Command::AddFlag(flags::Flag&& flag) { flags.AddFlag(std::move(flag)); }
+
 void Command::Run(Context&& ctx) const {
   if (ctx.Args().size() < 1) {
     throw Exception(

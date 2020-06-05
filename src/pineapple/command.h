@@ -26,6 +26,8 @@ class Command {
 
   std::string Outline() const noexcept;
 
+  void AddFlag(flags::Flag&& flag);
+
   void Run(Context&& ctx) const;
 
  private:
