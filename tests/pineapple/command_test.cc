@@ -209,3 +209,16 @@ TEST(CommandRun, FailedDueToExceptionFromAction) {
   EXPECT_THROW(cmd.Run(pineapple::Context(std::move(flags))),
                pineapple::Exception);
 }
+
+TEST(CommandRun, FailedDueToExceptionFromCommand) {
+  auto cmd = pineapple::App("cmd", "a command",
+                            [](pineapple::Command::const_action_ctx_t _) {});
+
+  cmd.AddCommand(pineapple::Command(
+      "do", "do something", [](pineapple::Command::const_action_ctx_t _) {
+        throw pineapple::Exception("something wrong");
+      }));
+
+  EXPECT_THROW(cmd.Run(std::vector<std::string>{"./cmd", "do"}),
+               pineapple::Exception);
+}
