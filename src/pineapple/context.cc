@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "external/flags/src/flags/flags.h"
+#include "src/pineapple/exceptions.h"
 
 namespace pineapple {
 typename Context::parent_t Context::Make(Context&& ctx) noexcept {
@@ -22,7 +23,11 @@ const typename Context::parent_t& Context::Parent() const noexcept {
 }
 
 const flags::Flag& Context::Flag(const std::string& name) const {
-  return flags.GetFlag(name);
+  try {
+    return flags.GetFlag(name);
+  } catch (const flags::Exception& e) {
+    throw Exception(e.What());
+  }
 }
 
 const std::vector<std::string>& Context::Args() const noexcept {

@@ -44,6 +44,7 @@ cc_library(
     srcs = ["context.cc"],
     hdrs = ["context.h"],
     deps = [
+        "//src/pineapple:exceptions",
         "@flags//src/flags",
     ],
 )

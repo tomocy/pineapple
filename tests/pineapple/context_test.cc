@@ -1,8 +1,7 @@
-#include "src/pineapple/context.h"
-
 #include <iostream>
 
 #include "external/gtest/googletest/include/gtest/gtest.h"
+#include "src/pineapple/pineapple.h"
 
 TEST(ContextParent, SuccessInWithoutParent) {
   auto flags = flags::FlagSet("parent");
@@ -63,4 +62,16 @@ TEST(ContextFlag, Success) {
   auto ctx = pineapple::Context(flags);
 
   EXPECT_EQ("123", ctx.Flag("aaa").Get<std::string>());
+}
+
+TEST(ContextFlag, FailedDueToUnknownFlag) {
+  auto flags = flags::FlagSet("flags");
+
+  flags.AddFlag(flags::Flag("aaa", flags::String::Make("")));
+
+  flags.Parse(std::vector<std::string>{"--aaa", "123"});
+
+  auto ctx = pineapple::Context(flags);
+
+  EXPECT_THROW(ctx.Flag("bbb"), pineapple::Exception);
 }
