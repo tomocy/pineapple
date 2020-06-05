@@ -16,6 +16,9 @@ App::App(const std::string& name) : Command(name) {}
 App::App(const std::string& name, const std::string& description)
     : Command(name, description, nullptr) {}
 
+App::App(const std::string& name, const action_t& action)
+    : Command(name, action) {}
+
 App::App(const std::string& name, const std::string& description,
          const Command::action_t& action)
     : Command(name, description, action) {}

@@ -7,6 +7,17 @@
 
 TEST(App, Success) { EXPECT_NO_THROW(pineapple::App("app", "a cli app")); }
 
+TEST(App, SuccessInOnlyWithName) { EXPECT_NO_THROW(pineapple::Command("do")); }
+
+TEST(App, SuccessInWithNameAndDescription) {
+  EXPECT_NO_THROW(pineapple::Command("do", "do something"));
+}
+
+TEST(App, SuccessInWithNameAndAction) {
+  EXPECT_NO_THROW(pineapple::Command(
+      "do", [](pineapple::Command::const_action_ctx_t _) {}));
+}
+
 TEST(App, FailedDueToEmptyName) {
   EXPECT_THROW(pineapple::App("", "a cli app"), pineapple::Exception);
 }

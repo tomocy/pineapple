@@ -16,6 +16,8 @@ class App : public Command {
 
   App(const std::string& name, const std::string& description);
 
+  App(const std::string& name, const action_t& action);
+
   App(const std::string& name, const std::string& description,
       const action_t& action);
 
