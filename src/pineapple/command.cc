@@ -66,17 +66,17 @@ void Command::AddCommand(Command&& command) {
   commands.emplace(command.Name(), std::move(command));
 }
 
-void Command::Run(Context&& ctx) {
-  if (ctx.Args().size() < 1) {
+void Command::Run(Context&& parent) {
+  if (parent.Args().size() < 1) {
     throw Exception(
         "insufficient arguments: one argument is required at least");
   }
 
-  auto trimmed = std::vector<std::string>(std::begin(ctx.Args()) + 1,
-                                          std::end(ctx.Args()));
+  auto trimmed = std::vector<std::string>(std::begin(parent.Args()) + 1,
+                                          std::end(parent.Args()));
   flags.Parse(trimmed);
 
-  ctx = Context(std::move(ctx), std::move(flags));
+  auto ctx = Context(Context::Make(std::move(parent)), flags);
 
   if (ctx.Args().size() >= 1 && DoHaveCommand(ctx.Args().at(0))) {
     RunCommand(std::move(ctx));

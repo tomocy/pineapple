@@ -1,5 +1,7 @@
 #include "src/pineapple/context.h"
 
+#include <iostream>
+
 #include "external/gtest/googletest/include/gtest/gtest.h"
 
 TEST(ContextParent, SuccessInWithoutParent) {
@@ -9,7 +11,7 @@ TEST(ContextParent, SuccessInWithoutParent) {
 
   flags.Parse(std::vector<std::string>{"--aaa", "123", "child", "--bbb"});
 
-  auto ctx = pineapple::Context(std::move(flags));
+  auto ctx = pineapple::Context(flags);
 
   EXPECT_EQ("123", ctx.Flag("aaa").Get<std::string>());
   EXPECT_EQ(nullptr, ctx.Parent());
@@ -31,7 +33,8 @@ TEST(ContextParent, SuccessInWithParent) {
 
   flags.Parse(std::vector<std::string>{"--bbb"});
 
-  auto ctx = pineapple::Context(std::move(parent_ctx), std::move(flags));
+  auto ctx = pineapple::Context(pineapple::Context::Make(std::move(parent_ctx)),
+                                flags);
 
   EXPECT_EQ("123", ctx.Parent()->Flag("aaa").Get<std::string>());
 
@@ -45,7 +48,7 @@ TEST(ContextArgs, Success) {
 
   flags.Parse(args);
 
-  auto ctx = pineapple::Context(std::move(flags));
+  auto ctx = pineapple::Context(flags);
 
   EXPECT_EQ(args, ctx.Args());
 }
@@ -57,7 +60,7 @@ TEST(ContextFlag, Success) {
 
   flags.Parse(std::vector<std::string>{"--aaa", "123"});
 
-  auto ctx = pineapple::Context(std::move(flags));
+  auto ctx = pineapple::Context(flags);
 
   EXPECT_EQ("123", ctx.Flag("aaa").Get<std::string>());
 }

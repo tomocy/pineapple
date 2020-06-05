@@ -1,16 +1,21 @@
 #include "src/pineapple/context.h"
 
+#include <memory>
 #include <string>
 #include <vector>
 
 #include "external/flags/src/flags/flags.h"
 
 namespace pineapple {
-Context::Context(Context&& parent, flags::FlagSet&& flags) noexcept
-    : parent(std::make_unique<Context>(std::move(parent))),
-      flags(std::move(flags)) {}
+typename Context::parent_t Context::Make(Context&& ctx) noexcept {
+  return std::make_unique<Context>(std::move(ctx));
+}
 
-Context::Context(flags::FlagSet&& flags) noexcept : flags(std::move(flags)) {}
+Context::Context(const flags::FlagSet& flags) noexcept
+    : Context(nullptr, flags) {}
+
+Context::Context(parent_t&& parent, const flags::FlagSet& flags) noexcept
+    : parent(std::move(parent)), flags(flags) {}
 
 const typename Context::parent_t& Context::Parent() const noexcept {
   return parent;

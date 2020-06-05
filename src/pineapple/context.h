@@ -12,9 +12,11 @@ class Context {
  public:
   using parent_t = std::unique_ptr<Context>;
 
-  Context(Context&& parent, flags::FlagSet&& flags) noexcept;
+  static parent_t Make(Context&& ctx) noexcept;
 
-  Context(flags::FlagSet&& flags) noexcept;
+  Context(const flags::FlagSet& flags) noexcept;
+
+  Context(parent_t&& parent, const flags::FlagSet& flags) noexcept;
 
   const parent_t& Parent() const noexcept;
 
@@ -23,8 +25,8 @@ class Context {
   const std::vector<std::string>& Args() const noexcept;
 
  private:
-  std::unique_ptr<Context> parent;
-  flags::FlagSet flags;
+  parent_t parent;
+  const flags::FlagSet& flags;
 };
 }  // namespace pineapple
 

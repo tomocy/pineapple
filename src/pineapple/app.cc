@@ -65,7 +65,7 @@ void App::Run(const std::vector<std::string>& args) {
   auto trimmed = std::vector<std::string>(std::begin(args) + 1, std::end(args));
   flags.Parse(trimmed);
 
-  auto ctx = Context(std::move(flags));
+  auto ctx = Context(flags);
 
   if (ctx.Args().size() >= 1 && DoHaveCommand(ctx.Args().at(0))) {
     RunCommand(std::move(ctx));

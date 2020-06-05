@@ -68,7 +68,7 @@ TEST(CommandRun, SuccessInWithoutArgs) {
 
   flags.Parse(std::vector<std::string>{"do"});
 
-  EXPECT_NO_THROW(cmd.Run(pineapple::Context(std::move(flags))));
+  EXPECT_NO_THROW(cmd.Run(pineapple::Context(flags)));
 
   EXPECT_TRUE(called);
 }
@@ -135,7 +135,7 @@ TEST(CommandRun, SuccessInWithFlagsAndArgs) {
   flags.Parse(
       std::vector<std::string>{"do", "--aaa", "123", "a", "b", "c,d", "e"});
 
-  EXPECT_NO_THROW(cmd.Run(pineapple::Context(std::move(flags))));
+  EXPECT_NO_THROW(cmd.Run(pineapple::Context(flags)));
 
   EXPECT_EQ("123", cmd_aaa_flag);
 
@@ -214,8 +214,7 @@ TEST(CommandRun, FailedDueToInsufficientArgs) {
 
   flags.Parse(std::vector<std::string>{});
 
-  EXPECT_THROW(cmd.Run(pineapple::Context(std::move(flags))),
-               pineapple::Exception);
+  EXPECT_THROW(cmd.Run(pineapple::Context(flags)), pineapple::Exception);
 }
 
 TEST(CommandRun, FailedDueToExceptionFromAction) {
@@ -228,8 +227,7 @@ TEST(CommandRun, FailedDueToExceptionFromAction) {
 
   flags.Parse(std::vector<std::string>{"do"});
 
-  EXPECT_THROW(cmd.Run(pineapple::Context(std::move(flags))),
-               pineapple::Exception);
+  EXPECT_THROW(cmd.Run(pineapple::Context(flags)), pineapple::Exception);
 }
 
 TEST(CommandRun, FailedDueToExceptionFromCommand) {
