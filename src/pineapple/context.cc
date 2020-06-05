@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <string>
+#include <tuple>
 #include <vector>
 
 #include "external/flags/src/flags/flags.h"
@@ -17,6 +18,20 @@ Context::Context(const flags::FlagSet& flags) noexcept
 
 Context::Context(parent_t&& parent, const flags::FlagSet& flags) noexcept
     : parent(std::move(parent)), flags(flags) {}
+
+std::tuple<const flags::Flag&, bool> Context::TryToGetGlobalFlag(
+    const std::string& name) const {
+  if (parent == nullptr) {
+    return {flags::Flag(), false};
+  }
+
+  try {
+    auto& flag = parent->Flag(name);
+    return {flag, true};
+  } catch (const Exception&) {
+    return parent->TryToGetGlobalFlag(name);
+  }
+}
 
 const typename Context::parent_t& Context::Parent() const noexcept {
   return parent;

@@ -3,6 +3,7 @@
 
 #include <memory>
 #include <string>
+#include <tuple>
 #include <vector>
 
 #include "external/flags/src/flags/flags.h"
@@ -17,6 +18,8 @@ class Context {
   Context(const flags::FlagSet& flags) noexcept;
 
   Context(parent_t&& parent, const flags::FlagSet& flags) noexcept;
+
+  std::tuple<const flags::Flag&, bool> TryToGetGlobalFlag(const std::string& name) const;
 
   const parent_t& Parent() const noexcept;
 

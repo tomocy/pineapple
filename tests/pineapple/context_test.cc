@@ -1,7 +1,51 @@
 #include <iostream>
+#include <tuple>
 
 #include "external/gtest/googletest/include/gtest/gtest.h"
 #include "src/pineapple/pineapple.h"
+
+TEST(ContextTryToGetGlobalFlag, Success) {
+  auto parent_flags = flags::FlagSet("parent");
+
+  parent_flags.AddFlag(flags::Flag("aaa", flags::String::Make("")));
+
+  parent_flags.Parse(std::vector<std::string>{"--aaa", "123"});
+
+  auto parent_ctx = pineapple::Context(parent_flags);
+
+  auto flags = flags::FlagSet("child");
+
+  flags.Parse(std::vector<std::string>());
+
+  auto ctx = pineapple::Context(pineapple::Context::Make(std::move(parent_ctx)),
+                                flags);
+
+  auto [flag, ok] = ctx.TryToGetGlobalFlag("aaa");
+
+  EXPECT_TRUE(ok);
+  EXPECT_EQ("123", flag.Get<std::string>());
+}
+
+TEST(ContextTryToGlobalFlag, SuccessInUnknownFlag) {
+  auto parent_flags = flags::FlagSet("parent");
+
+  parent_flags.AddFlag(flags::Flag("aaa", flags::String::Make("")));
+
+  parent_flags.Parse(std::vector<std::string>{"--aaa", "123"});
+
+  auto parent_ctx = pineapple::Context(parent_flags);
+
+  auto flags = flags::FlagSet("child");
+
+  flags.Parse(std::vector<std::string>());
+
+  auto ctx = pineapple::Context(pineapple::Context::Make(std::move(parent_ctx)),
+                                flags);
+
+  auto [_, ok] = ctx.TryToGetGlobalFlag("bbb");
+
+  EXPECT_FALSE(ok);
+}
 
 TEST(ContextParent, SuccessInWithoutParent) {
   auto flags = flags::FlagSet("parent");
@@ -24,7 +68,7 @@ TEST(ContextParent, SuccessInWithParent) {
   parent_flags.Parse(
       std::vector<std::string>{"--aaa", "123", "child", "--bbb"});
 
-  auto parent_ctx = pineapple::Context(std::move(parent_flags));
+  auto parent_ctx = pineapple::Context(parent_flags);
 
   auto flags = flags::FlagSet("child");
 
