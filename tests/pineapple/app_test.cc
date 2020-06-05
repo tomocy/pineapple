@@ -28,6 +28,14 @@ TEST(AppRun, Success) {
   EXPECT_NO_THROW(app.Run(std::vector<std::string>{"/app"}));
 }
 
+TEST(AppRun, SuccessWithCArgs) {
+  auto app = pineapple::App("app", "a cli app");
+
+  const char* args[] = {"/app"};
+
+  EXPECT_NO_THROW(app.Run(1, args));
+}
+
 TEST(AppRun, SuccessInActionWithoutArgs) {
   auto called = false;
   auto app = pineapple::App(

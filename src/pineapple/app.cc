@@ -23,6 +23,10 @@ App::App(const std::string& name, const std::string& description,
          const Command::action_t& action)
     : Command(name, description, action) {}
 
+void App::Run(int n, const char** args) {
+  Run(std::vector<std::string>(args, args + n));
+}
+
 void App::Run(const std::vector<std::string>& args) {
   if (args.size() < 1) {
     throw Exception(

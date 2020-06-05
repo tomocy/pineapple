@@ -21,6 +21,8 @@ class App : public Command {
   App(const std::string& name, const std::string& description,
       const action_t& action);
 
+  void Run(int n, const char** args);
+
   void Run(const std::vector<std::string>& args);
 };
 }  // namespace pineapple
