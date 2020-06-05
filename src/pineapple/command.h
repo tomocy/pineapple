@@ -40,6 +40,10 @@ class Command {
  private:
   const std::string& ValidateName(const std::string& name) const;
 
+  std::string FlagsUsage() const noexcept;
+
+  std::string CommandsUsage() const noexcept;
+
   void DoAction(const Context& ctx) const;
 
   void RunCommand(Context&& args);

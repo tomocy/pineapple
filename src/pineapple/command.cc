@@ -27,7 +27,25 @@ Command::Command(const std::string& name, const std::string& description,
 
 const std::string& Command::Name() const noexcept { return name; }
 
-std::string Command::Usage() const noexcept { return Outline(); }
+std::string Command::Usage() const noexcept {
+  auto usage = name;
+
+  if (!description.empty()) {
+    usage += " - " + description;
+  }
+
+  if (flags.FlagSize() >= 1) {
+    usage += "\n";
+    usage += FlagsUsage();
+  }
+
+  if (!commands.empty()) {
+    usage += "\n";
+    usage += CommandsUsage();
+  }
+
+  return usage;
+}
 
 std::string Command::Outline() const noexcept {
   auto usage = name;
@@ -81,6 +99,32 @@ const std::string& Command::ValidateName(const std::string& name) const {
   }
 
   return name;
+}
+
+std::string Command::FlagsUsage() const noexcept {
+  auto usage = std::string("Flags:\n");
+
+  usage += flags.Usage([](const auto& _, const auto& flags) {
+    auto usage = std::string("");
+
+    for (auto iter = std::begin(flags); iter != std::end(flags); ++iter) {
+      usage += iter->second.Usage() + "\n";
+    }
+
+    return usage;
+  });
+
+  return usage.erase(usage.size() - 1, 1);
+}
+
+std::string Command::CommandsUsage() const noexcept {
+  auto usage = std::string("Commands:\n");
+
+  for (auto iter = std::begin(commands); iter != std::end(commands); ++iter) {
+    usage += iter->second.Outline() + "\n";
+  }
+
+  return usage.erase(usage.size() - 1, 1);
 }
 
 void Command::DoAction(const Context& ctx) const {

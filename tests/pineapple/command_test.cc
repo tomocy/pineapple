@@ -17,11 +17,38 @@ TEST(Command, FailedDueToEmptyName) {
       pineapple::Exception);
 }
 
-TEST(CommandUsage, Success) {
-  auto cmd = pineapple::Command(
-      "do", "do something", [](pineapple::Command::const_action_ctx_t _) {});
+TEST(CommandUsage, SuccessInWithoutDescription) {
+  auto cmd = pineapple::Command("cmd");
 
-  EXPECT_EQ("do  do something", cmd.Usage());
+  EXPECT_EQ("cmd", cmd.Usage());
+}
+
+TEST(CommandUsage, SuccessInWithDescription) {
+  auto cmd = pineapple::App("cmd", "a command");
+
+  EXPECT_EQ("cmd - a command", cmd.Usage());
+}
+
+TEST(CommandUsage, SuccessInWithCommands) {
+  auto cmd = pineapple::Command("cmd", "a command");
+
+  cmd.AddFlag(
+      flags::Flag("help", flags::Bool::Make(false), "print help message"));
+
+  cmd.AddCommand(
+      pineapple::Command("create", "create something",
+                         [](pineapple::Command::const_action_ctx_t _) {}));
+  cmd.AddCommand(
+      pineapple::Command("delete", "delete something",
+                         [](pineapple::Command::const_action_ctx_t _) {}));
+
+  EXPECT_EQ(R"###(cmd - a command
+Flags:
+--help bool  print help message (default: false)
+Commands:
+create  create something
+delete  delete something)###",
+            cmd.Usage());
 }
 
 TEST(CommandOutline, Success) {
