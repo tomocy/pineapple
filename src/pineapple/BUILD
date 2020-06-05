@@ -4,8 +4,7 @@ cc_library(
     name = "pineapple",
     hdrs = ["pineapple.h"],
     visibility = [
-        "//example:__pkg__",
-        "//tests/pineapple:__pkg__",
+        "//visibility:public",
     ],
     deps = [
         "//src/pineapple:app",
