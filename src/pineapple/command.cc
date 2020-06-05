@@ -58,7 +58,13 @@ std::string Command::Outline() const noexcept {
   return usage;
 }
 
-void Command::AddFlag(flags::Flag&& flag) { flags.AddFlag(std::move(flag)); }
+void Command::AddFlag(flags::Flag&& flag) {
+  try {
+    flags.AddFlag(std::move(flag));
+  } catch (const flags::Exception& e) {
+    throw Exception(e.What());
+  }
+}
 
 void Command::AddCommand(Command&& command) {
   if (commands.find(command.Name()) != commands.end()) {

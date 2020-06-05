@@ -100,7 +100,7 @@ TEST(CommandAddFlag, FailedDueToDuplicatedFlags) {
   cmd.AddFlag(flags::Flag("aaa", flags::String::Make("")));
 
   EXPECT_THROW(cmd.AddFlag(flags::Flag("aaa", flags::String::Make(""))),
-               flags::Exception);
+               pineapple::Exception);
 }
 
 TEST(CommandAddCommand, Success) {
