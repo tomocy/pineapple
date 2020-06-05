@@ -9,15 +9,20 @@
 #include "src/pineapple/exceptions.h"
 
 namespace pineapple {
-Command::Command() noexcept
-    : Command("command", "description", [](const_action_ctx_t _) {}) {}
+Command::Command() noexcept : Command("command") {}
+
+Command::Command(const std::string& name)
+    : Command(name, description, nullptr) {}
+
+Command::Command(const std::string& name, const std::string& description)
+    : Command(name, description, nullptr) {}
 
 Command::Command(const std::string& name, const std::string& description,
                  const Command::action_t& action)
     : name(ValidateName(name)),
-      description(ValidateDescription(description)),
+      description(description),
       flags(flags::FlagSet("flags")),
-      action(ValidateAction(action)),
+      action(action),
       commands(std::map<std::string, Command>()) {}
 
 const std::string& Command::Name() const noexcept { return name; }
@@ -76,20 +81,6 @@ const std::string& Command::ValidateName(const std::string& name) const {
   }
 
   return name;
-}
-
-const std::string& Command::ValidateDescription(
-    const std::string& description) const {
-  return description;
-}
-
-const typename Command::action_t& Command::ValidateAction(
-    const Command::action_t& action) const {
-  if (action == nullptr) {
-    throw Exception("action should not be null");
-  }
-
-  return action;
 }
 
 void Command::DoAction(const Context& ctx) const {

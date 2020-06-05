@@ -18,6 +18,10 @@ class Command {
 
   Command() noexcept;
 
+  Command(const std::string& name);
+
+  Command(const std::string& name, const std::string& description);
+
   Command(const std::string& name, const std::string& description,
           const action_t& action);
 
@@ -35,10 +39,6 @@ class Command {
 
  private:
   const std::string& ValidateName(const std::string& name) const;
-
-  const std::string& ValidateDescription(const std::string& descriptoin) const;
-
-  const action_t& ValidateAction(const action_t& action) const;
 
   void DoAction(const Context& ctx) const;
 

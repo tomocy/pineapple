@@ -17,11 +17,6 @@ TEST(Command, FailedDueToEmptyName) {
       pineapple::Exception);
 }
 
-TEST(Command, FailedDueToNoAction) {
-  EXPECT_THROW(pineapple::Command("do", "do something", nullptr),
-               pineapple::Exception);
-}
-
 TEST(CommandUsage, Success) {
   auto cmd = pineapple::Command(
       "do", "do something", [](pineapple::Command::const_action_ctx_t _) {});
