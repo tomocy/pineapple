@@ -48,12 +48,12 @@ std::string App::Usage() const noexcept {
 
 void App::AddFlag(flags::Flag&& flag) { flags.AddFlag(std::move(flag)); }
 
-void App::AddCommand(const Command& command) {
+void App::AddCommand(Command&& command) {
   if (commands.find(command.Name()) != commands.end()) {
     throw Exception("command \"" + command.Name() + "\" is already added");
   }
 
-  commands.emplace(command.Name(), command);
+  commands.emplace(command.Name(), std::move(command));
 }
 
 void App::Run(const std::vector<std::string>& args) {
@@ -114,8 +114,8 @@ std::string App::FlagsUsage() const noexcept {
 std::string App::CommandsUsage() const noexcept {
   auto usage = std::string("Commands:\n");
 
-  for (auto [_, cmd] : commands) {
-    usage += cmd.Outline() + "\n";
+  for (auto iter = std::begin(commands); iter != std::end(commands); ++iter) {
+    usage += iter->second.Outline() + "\n";
   }
 
   return usage.erase(usage.size() - 1, 1);

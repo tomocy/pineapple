@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+#include "external/flags/src/flags/flags.h"
 #include "src/pineapple/context.h"
 
 namespace pineapple {
@@ -14,7 +15,7 @@ class Command {
 
   using action_t = std::function<void(const_action_ctx_t ctx)>;
 
-  Command() = default;
+  Command() noexcept;
 
   Command(const std::string& name, const std::string& description,
           const action_t& action);
@@ -36,6 +37,7 @@ class Command {
 
   std::string name;
   std::string description;
+  flags::FlagSet flags;
   action_t action;
 };
 }  // namespace pineapple

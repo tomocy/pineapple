@@ -70,12 +70,13 @@ TEST(AppAddCommand, Success) {
 TEST(AppAddCommand, FailedDueToDuplicatedCommands) {
   auto app = pineapple::App("app", "a cli app");
 
-  auto cmd = pineapple::Command(
-      "do", "do somethiing", [](pineapple::Command::const_action_ctx_t _) {});
+  app.AddCommand(pineapple::Command(
+      "do", "do somethiing", [](pineapple::Command::const_action_ctx_t _) {}));
 
-  app.AddCommand(cmd);
-
-  EXPECT_THROW(app.AddCommand(cmd), pineapple::Exception);
+  EXPECT_THROW(app.AddCommand(pineapple::Command(
+                   "do", "do somethiing",
+                   [](pineapple::Command::const_action_ctx_t _) {})),
+               pineapple::Exception);
 }
 
 TEST(AppRun, Success) {

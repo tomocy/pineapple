@@ -8,10 +8,14 @@
 #include "src/pineapple/exceptions.h"
 
 namespace pineapple {
+Command::Command() noexcept
+    : Command("command", "description", [](const_action_ctx_t _) {}) {}
+
 Command::Command(const std::string& name, const std::string& description,
                  const Command::action_t& action)
     : name(ValidateName(name)),
       description(ValidateDescription(description)),
+      flags(flags::FlagSet("flags")),
       action(ValidateAction(action)) {}
 
 const std::string& Command::Name() const noexcept { return name; }
