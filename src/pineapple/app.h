@@ -44,7 +44,7 @@ class App {
 
   void DoAction(const Context& ctx) const;
 
-  void RunCommand(Context&& args) const;
+  void RunCommand(Context&& args);
 
   bool DoHaveCommand(const std::string& name) const noexcept;
 

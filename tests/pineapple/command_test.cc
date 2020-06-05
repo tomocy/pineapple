@@ -68,11 +68,14 @@ TEST(CommandAddFlag, FailedDueToDuplicatedFlags) {
                flags::Exception);
 }
 
-TEST(CommandRun, SuccessInWithArgs) {
+TEST(CommandRun, SuccessInWithFlagsAndArgs) {
+  auto cmd_aaa_flag = std::string("");
   auto cmd_args = std::string("");
   auto cmd = pineapple::Command(
       "do", "do something",
-      [&cmd_args](pineapple::Command::const_action_ctx_t ctx) {
+      [&cmd_aaa_flag, &cmd_args](pineapple::Command::const_action_ctx_t ctx) {
+        cmd_aaa_flag = ctx.Flag("aaa").Get<std::string>();
+
         auto args = ctx.Args();
 
         std::ostringstream joined;
@@ -82,11 +85,16 @@ TEST(CommandRun, SuccessInWithArgs) {
         cmd_args = joined.str();
       });
 
+  cmd.AddFlag(flags::Flag("aaa", flags::String::Make("")));
+
   auto flags = flags::FlagSet("do");
 
-  flags.Parse(std::vector<std::string>{"do", "a", "b", "c,d", "e"});
+  flags.Parse(
+      std::vector<std::string>{"do", "--aaa", "123", "a", "b", "c,d", "e"});
 
   EXPECT_NO_THROW(cmd.Run(pineapple::Context(std::move(flags))));
+
+  EXPECT_EQ("123", cmd_aaa_flag);
 
   EXPECT_EQ("a,b,c,d,e,", cmd_args);
 }

@@ -1,5 +1,6 @@
 #include "src/pineapple/command.h"
 
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -33,13 +34,11 @@ std::string Command::Outline() const noexcept {
 
 void Command::AddFlag(flags::Flag&& flag) { flags.AddFlag(std::move(flag)); }
 
-void Command::Run(Context&& ctx) const {
+void Command::Run(Context&& ctx) {
   if (ctx.Args().size() < 1) {
     throw Exception(
         "insufficient arguments: one argument is required at least");
   }
-
-  auto flags = flags::FlagSet(name);
 
   auto trimmed = std::vector<std::string>(std::begin(ctx.Args()) + 1,
                                           std::end(ctx.Args()));

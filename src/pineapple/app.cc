@@ -129,7 +129,7 @@ void App::DoAction(const Context& ctx) const {
   action(ctx);
 }
 
-void App::RunCommand(Context&& ctx) const {
+void App::RunCommand(Context&& ctx) {
   if (ctx.Args().size() < 1) {
     throw Exception("command name should be provided");
   }

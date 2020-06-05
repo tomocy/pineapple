@@ -28,7 +28,7 @@ class Command {
 
   void AddFlag(flags::Flag&& flag);
 
-  void Run(Context&& ctx) const;
+  void Run(Context&& ctx);
 
  private:
   const std::string& ValidateName(const std::string& name) const;
