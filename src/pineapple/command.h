@@ -37,6 +37,16 @@ class Command {
 
   void Run(Context&& ctx);
 
+ protected:
+  void DoAction(const Context& ctx) const;
+
+  void RunCommand(Context&& ctx);
+
+  bool DoHaveCommand(const std::string& name) const noexcept;
+
+  flags::FlagSet flags;
+  action_t action;
+
  private:
   const std::string& ValidateName(const std::string& name) const;
 
@@ -44,16 +54,8 @@ class Command {
 
   std::string CommandsUsage() const noexcept;
 
-  void DoAction(const Context& ctx) const;
-
-  void RunCommand(Context&& ctx);
-
-  bool DoHaveCommand(const std::string& name) const noexcept;
-
   std::string name;
   std::string description;
-  flags::FlagSet flags;
-  action_t action;
   std::map<std::string, Command> commands;
 };
 }  // namespace pineapple

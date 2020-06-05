@@ -19,10 +19,10 @@ Command::Command(const std::string& name, const std::string& description)
 
 Command::Command(const std::string& name, const std::string& description,
                  const Command::action_t& action)
-    : name(ValidateName(name)),
-      description(description),
-      flags(flags::FlagSet("flags")),
+    : flags(flags::FlagSet("flags")),
       action(action),
+      name(ValidateName(name)),
+      description(description),
       commands(std::map<std::string, Command>()) {}
 
 const std::string& Command::Name() const noexcept { return name; }
@@ -72,9 +72,25 @@ void Command::Run(Context&& parent) {
         "insufficient arguments: one argument is required at least");
   }
 
+  std::cout << "parent args:" << std::endl;
+  for (auto arg : parent.Args()) {
+    std::cout << arg << std::endl;
+  }
+
   auto trimmed = std::vector<std::string>(std::begin(parent.Args()) + 1,
                                           std::end(parent.Args()));
+
+  std::cout << "trimmed args:" << std::endl;
+  for (auto arg : trimmed) {
+    std::cout << arg << std::endl;
+  }
+
   flags.Parse(trimmed);
+
+  std::cout << "flags args:" << std::endl;
+  for (auto arg : flags.Args()) {
+    std::cout << arg << std::endl;
+  }
 
   auto ctx = Context(Context::Make(std::move(parent)), flags);
 
