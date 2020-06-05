@@ -55,7 +55,19 @@ void Command::Run(Context&& ctx) {
 
   ctx = Context(std::move(ctx), std::move(flags));
 
-  action(ctx);
+  if (ctx.Args().size() >= 1 && DoHaveCommand(ctx.Args().at(0))) {
+    RunCommand(std::move(ctx));
+    return;
+  }
+
+  if (ctx.Args().empty() || action != nullptr) {
+    DoAction(ctx);
+    return;
+  }
+
+  throw Exception("argument\"" + ctx.Args().at(0) +
+                  "\" is not handled at all: action or command named \"" +
+                  ctx.Args().at(0) + "\" is needed");
 }
 
 const std::string& Command::ValidateName(const std::string& name) const {
@@ -78,5 +90,31 @@ const typename Command::action_t& Command::ValidateAction(
   }
 
   return action;
+}
+
+void Command::DoAction(const Context& ctx) const {
+  if (action == nullptr) {
+    return;
+  }
+
+  action(ctx);
+}
+
+void Command::RunCommand(Context&& ctx) {
+  if (ctx.Args().size() < 1) {
+    throw Exception("command name should be provided");
+  }
+
+  auto name = ctx.Args().at(0);
+
+  if (!DoHaveCommand(name)) {
+    throw Exception("unknown command: command \"" + name + "\" is not added");
+  }
+
+  commands.at(name).Run(std::move(ctx));
+}
+
+bool Command::DoHaveCommand(const std::string& name) const noexcept {
+  return commands.find(name) != commands.end();
 }
 }  // namespace pineapple

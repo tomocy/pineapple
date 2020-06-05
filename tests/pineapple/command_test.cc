@@ -120,6 +120,70 @@ TEST(CommandRun, SuccessInWithFlagsAndArgs) {
   EXPECT_EQ("a,b,c,d,e,", cmd_args);
 }
 
+TEST(CommandRun, SuccessInCommandWithoutArgs) {
+  auto cmd = pineapple::App("cmd", "a command");
+
+  auto called = false;
+  cmd.AddCommand(pineapple::Command(
+      "do", "do something",
+      [&called](pineapple::Command::const_action_ctx_t _) { called = true; }));
+
+  EXPECT_NO_THROW(cmd.Run(std::vector<std::string>{"/app", "do"}));
+
+  EXPECT_TRUE(called);
+}
+
+TEST(CommandRun, SuccessInCommandWithArgs) {
+  auto cmd = pineapple::App("cmd", "a command");
+
+  auto do_args = std::string("");
+  cmd.AddCommand(pineapple::Command(
+      "do", "do something",
+      [&do_args](pineapple::Command::const_action_ctx_t ctx) {
+        auto args = ctx.Args();
+
+        std::ostringstream joined;
+        std::copy(std::begin(args), std::end(args),
+                  std::ostream_iterator<std::string>(joined, ","));
+
+        do_args = joined.str();
+      }));
+
+  EXPECT_NO_THROW(
+      cmd.Run(std::vector<std::string>{"/app", "do", "a", "b", "c,d", "e"}));
+
+  EXPECT_EQ("a,b,c,d,e,", do_args);
+}
+
+TEST(CommandRun, SuccessInCommandWithParentFlags) {
+  auto cmd = pineapple::App("cmd", "a command");
+
+  cmd.AddFlag(flags::Flag("aaa", flags::String::Make("")));
+
+  auto parent_aaa_flag = std::string("");
+  auto do_args = std::string("");
+  cmd.AddCommand(pineapple::Command(
+      "do", "do something",
+      [&parent_aaa_flag, &do_args](pineapple::Command::const_action_ctx_t ctx) {
+        parent_aaa_flag = ctx.Parent()->Flag("aaa").Get<std::string>();
+
+        auto args = ctx.Args();
+
+        std::ostringstream joined;
+        std::copy(std::begin(args), std::end(args),
+                  std::ostream_iterator<std::string>(joined, ","));
+
+        do_args = joined.str();
+      }));
+
+  EXPECT_NO_THROW(cmd.Run(std::vector<std::string>{
+      "./cmd", "--aaa", "123", "do", "a", "b", "c,d", "e"}));
+
+  EXPECT_EQ("123", parent_aaa_flag);
+
+  EXPECT_EQ("a,b,c,d,e,", do_args);
+}
+
 TEST(CommandRun, FailedDueToInsufficientArgs) {
   auto cmd = pineapple::Command(
       "do", "do something", [](pineapple::Command::const_action_ctx_t _) {});

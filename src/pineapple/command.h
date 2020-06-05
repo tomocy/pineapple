@@ -40,6 +40,12 @@ class Command {
 
   const action_t& ValidateAction(const action_t& action) const;
 
+  void DoAction(const Context& ctx) const;
+
+  void RunCommand(Context&& args);
+
+  bool DoHaveCommand(const std::string& name) const noexcept;
+
   std::string name;
   std::string description;
   flags::FlagSet flags;
