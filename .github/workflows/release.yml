@@ -1,0 +1,30 @@
+name: Release
+
+on:
+  push:
+    tags:
+    - v*
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+    - name: Setup Node.js environment
+      uses: actions/setup-node@v1.4.2
+    - name: Install bazelisk
+      run: npm install -g @bazel/bazelisk
+    - name: Run tests
+      run: bazelisk test //...
+  release:
+    runs-on: ubuntu-latest
+    needs:
+    - test
+    steps:
+    - name: Create a release for ${{ github.ref }}
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: ${{ github.ref }}
