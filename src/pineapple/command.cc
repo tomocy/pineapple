@@ -11,8 +11,7 @@
 namespace pineapple {
 Command::Command() noexcept : Command("command") {}
 
-Command::Command(const std::string& name)
-    : Command(name, description, nullptr) {}
+Command::Command(const std::string& name) : Command(name, "", nullptr) {}
 
 Command::Command(const std::string& name, const std::string& description)
     : Command(name, description, nullptr) {}
