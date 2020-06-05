@@ -68,6 +68,27 @@ TEST(CommandAddFlag, FailedDueToDuplicatedFlags) {
                flags::Exception);
 }
 
+TEST(CommandAddCommand, Success) {
+  auto cmd = pineapple::Command(
+      "cmd", "a command", [](pineapple::Command::const_action_ctx_t _) {});
+
+  EXPECT_NO_THROW(cmd.AddCommand(pineapple::Command(
+      "do", "do somethiing", [](pineapple::Command::const_action_ctx_t _) {})));
+}
+
+TEST(CommandAddCommand, FailedDueToDuplicatedCommands) {
+  auto cmd = pineapple::Command(
+      "cmd", "a command", [](pineapple::Command::const_action_ctx_t _) {});
+
+  cmd.AddCommand(pineapple::Command(
+      "do", "do somethiing", [](pineapple::Command::const_action_ctx_t _) {}));
+
+  EXPECT_THROW(cmd.AddCommand(pineapple::Command(
+                   "do", "do somethiing",
+                   [](pineapple::Command::const_action_ctx_t _) {})),
+               pineapple::Exception);
+}
+
 TEST(CommandRun, SuccessInWithFlagsAndArgs) {
   auto cmd_aaa_flag = std::string("");
   auto cmd_args = std::string("");

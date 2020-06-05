@@ -29,6 +29,8 @@ class Command {
 
   void AddFlag(flags::Flag&& flag);
 
+  void AddCommand(Command&& command);
+
   void Run(Context&& ctx);
 
  private:

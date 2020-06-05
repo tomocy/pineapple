@@ -35,6 +35,14 @@ std::string Command::Outline() const noexcept {
 
 void Command::AddFlag(flags::Flag&& flag) { flags.AddFlag(std::move(flag)); }
 
+void Command::AddCommand(Command&& command) {
+  if (commands.find(command.Name()) != commands.end()) {
+    throw Exception("command \"" + command.Name() + "\" is already added");
+  }
+
+  commands.emplace(command.Name(), std::move(command));
+}
+
 void Command::Run(Context&& ctx) {
   if (ctx.Args().size() < 1) {
     throw Exception(
