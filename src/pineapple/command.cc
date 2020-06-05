@@ -72,25 +72,10 @@ void Command::Run(Context&& parent) {
         "insufficient arguments: one argument is required at least");
   }
 
-  std::cout << "parent args:" << std::endl;
-  for (auto arg : parent.Args()) {
-    std::cout << arg << std::endl;
-  }
-
   auto trimmed = std::vector<std::string>(std::begin(parent.Args()) + 1,
                                           std::end(parent.Args()));
 
-  std::cout << "trimmed args:" << std::endl;
-  for (auto arg : trimmed) {
-    std::cout << arg << std::endl;
-  }
-
   flags.Parse(trimmed);
-
-  std::cout << "flags args:" << std::endl;
-  for (auto arg : flags.Args()) {
-    std::cout << arg << std::endl;
-  }
 
   auto ctx = Context(Context::Make(std::move(parent)), flags);
 
