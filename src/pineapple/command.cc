@@ -17,7 +17,8 @@ Command::Command(const std::string& name, const std::string& description,
     : name(ValidateName(name)),
       description(ValidateDescription(description)),
       flags(flags::FlagSet("flags")),
-      action(ValidateAction(action)) {}
+      action(ValidateAction(action)),
+      commands(std::map<std::string, Command>()) {}
 
 const std::string& Command::Name() const noexcept { return name; }
 

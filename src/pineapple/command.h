@@ -2,6 +2,7 @@
 #define TOMOCY_PINEAPPLE_PINEAPPLE_COMMAND_H
 
 #include <functional>
+#include <map>
 #include <string>
 #include <vector>
 
@@ -41,6 +42,7 @@ class Command {
   std::string description;
   flags::FlagSet flags;
   action_t action;
+  std::map<std::string, Command> commands;
 };
 }  // namespace pineapple
 
