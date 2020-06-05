@@ -126,6 +126,55 @@ TEST(AppRun, SuccessInCommandWithParentArgs) {
   EXPECT_EQ("a,b,c,d,e,", do_args);
 }
 
+TEST(AppRun, SuccessInCommandInCommandWithoutArgs) {
+  auto do_a_flag = std::string("");
+  auto do_a_args = std::string("");
+  auto do_a_cmd = pineapple::Command(
+      "a", "do A",
+      [&do_a_flag, &do_a_args](pineapple::Command::const_action_ctx_t ctx) {
+        do_a_flag = ctx.Flag("aaa").Get<std::string>();
+
+        std::ostringstream joined;
+        std::copy(std::begin(ctx.Args()), std::end(ctx.Args()),
+                  std::ostream_iterator<std::string>(joined, ","));
+
+        do_a_args = joined.str();
+      });
+
+  do_a_cmd.AddFlag(flags::Flag("aaa", flags::String::Make("")));
+
+  auto do_cmd = pineapple::Command("do");
+  do_cmd.AddCommand(std::move(do_a_cmd));
+
+  auto app = pineapple::App("app");
+
+  app.AddCommand(std::move(do_cmd));
+
+  EXPECT_NO_THROW(app.Run(std::vector<std::string>{
+      "./app", "do", "a", "--aaa", "123", "a", "b", "c,d", "e"}));
+
+  EXPECT_EQ("123", do_a_flag);
+
+  EXPECT_EQ("a,b,c,d,e,", do_a_args);
+}
+
+TEST(AppRun, SuccessInCommandInCommandWithFlagsAndArgs) {
+  auto cmd = pineapple::Command("do");
+
+  auto called = false;
+  cmd.AddCommand(pineapple::Command(
+      "a", "do A",
+      [&called](pineapple::Command::const_action_ctx_t _) { called = true; }));
+
+  auto app = pineapple::App("app");
+
+  app.AddCommand(std::move(cmd));
+
+  EXPECT_NO_THROW(app.Run(std::vector<std::string>{"./app", "do", "a"}));
+
+  EXPECT_TRUE(called);
+}
+
 TEST(AppRun, FailedDueToInsufficientArgs) {
   auto app = pineapple::App("app", "a cli app");
 
@@ -148,5 +197,21 @@ TEST(AppRun, FailedDueToExceptionFromCommand) {
       }));
 
   EXPECT_THROW(app.Run(std::vector<std::string>{"/app", "do"}),
+               pineapple::Exception);
+}
+
+TEST(AppRun, FailedDueToExceptionFromCommandInCommand) {
+  auto cmd = pineapple::Command("do");
+
+  cmd.AddCommand(pineapple::Command(
+      "a", "do A", [](pineapple::Command::const_action_ctx_t _) {
+        throw pineapple::Exception("an exception from do-a-command");
+      }));
+
+  auto app = pineapple::App("app");
+
+  app.AddCommand(std::move(cmd));
+
+  EXPECT_THROW(app.Run(std::vector<std::string>{"./app", "do", "a"}),
                pineapple::Exception);
 }
