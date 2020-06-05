@@ -17,3 +17,12 @@ cc_test(
         "@gtest//:gtest_main",
     ],
 )
+
+cc_test(
+    name = "context",
+    srcs = ["context_test.cc"],
+    deps = [
+        "//src/pineapple",
+        "@gtest//:gtest_main",
+    ],
+)
