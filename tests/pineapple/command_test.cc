@@ -37,7 +37,7 @@ TEST(CommandUsage, SuccessInWithoutDescription) {
 }
 
 TEST(CommandUsage, SuccessInWithDescription) {
-  auto cmd = pineapple::App("cmd", "a command");
+  auto cmd = pineapple::Command("cmd", "a command");
 
   EXPECT_EQ("cmd - a command", cmd.Usage());
 }
@@ -156,20 +156,24 @@ TEST(CommandRun, SuccessInWithFlagsAndArgs) {
 }
 
 TEST(CommandRun, SuccessInCommandWithoutArgs) {
-  auto cmd = pineapple::App("cmd", "a command");
+  auto cmd = pineapple::Command("cmd", "a command");
 
   auto called = false;
   cmd.AddCommand(pineapple::Command(
       "do", "do something",
       [&called](pineapple::Command::const_action_ctx_t _) { called = true; }));
 
-  EXPECT_NO_THROW(cmd.Run(std::vector<std::string>{"/app", "do"}));
+  auto flags = flags::FlagSet("do");
+
+  flags.Parse(std::vector<std::string>{"cmd", "do"});
+
+  EXPECT_NO_THROW(cmd.Run(pineapple::Context(flags)));
 
   EXPECT_TRUE(called);
 }
 
 TEST(CommandRun, SuccessInCommandWithArgs) {
-  auto cmd = pineapple::App("cmd", "a command");
+  auto cmd = pineapple::Command("cmd", "a command");
 
   auto do_args = std::string("");
   cmd.AddCommand(pineapple::Command(
@@ -184,14 +188,17 @@ TEST(CommandRun, SuccessInCommandWithArgs) {
         do_args = joined.str();
       }));
 
-  EXPECT_NO_THROW(
-      cmd.Run(std::vector<std::string>{"/app", "do", "a", "b", "c,d", "e"}));
+  auto flags = flags::FlagSet("do");
+
+  flags.Parse(std::vector<std::string>{"cmd", "do", "a", "b", "c,d", "e"});
+
+  EXPECT_NO_THROW(cmd.Run(pineapple::Context(flags)));
 
   EXPECT_EQ("a,b,c,d,e,", do_args);
 }
 
 TEST(CommandRun, SuccessInCommandWithParentFlags) {
-  auto cmd = pineapple::App("cmd", "a command");
+  auto cmd = pineapple::Command("cmd", "a command");
 
   cmd.AddFlag(flags::Flag("aaa", flags::String::Make("")));
 
@@ -211,8 +218,12 @@ TEST(CommandRun, SuccessInCommandWithParentFlags) {
         do_args = joined.str();
       }));
 
-  EXPECT_NO_THROW(cmd.Run(std::vector<std::string>{
-      "./cmd", "--aaa", "123", "do", "a", "b", "c,d", "e"}));
+  auto flags = flags::FlagSet("cmd");
+
+  flags.Parse(std::vector<std::string>{"cmd", "--aaa", "123", "do", "a", "b",
+                                       "c,d", "e"});
+
+  EXPECT_NO_THROW(cmd.Run(pineapple::Context(flags)));
 
   EXPECT_EQ("123", parent_aaa_flag);
 
@@ -244,14 +255,17 @@ TEST(CommandRun, FailedDueToExceptionFromAction) {
 }
 
 TEST(CommandRun, FailedDueToExceptionFromCommand) {
-  auto cmd = pineapple::App("cmd", "a command",
-                            [](pineapple::Command::const_action_ctx_t _) {});
+  auto cmd = pineapple::Command(
+      "cmd", "a command", [](pineapple::Command::const_action_ctx_t _) {});
 
   cmd.AddCommand(pineapple::Command(
       "do", "do something", [](pineapple::Command::const_action_ctx_t _) {
         throw pineapple::Exception("something wrong");
       }));
 
-  EXPECT_THROW(cmd.Run(std::vector<std::string>{"./cmd", "do"}),
-               pineapple::Exception);
+  auto flags = flags::FlagSet("cmd");
+
+  flags.Parse(std::vector<std::string>{"cmd", "do"});
+
+  EXPECT_THROW(cmd.Run(pineapple::Context(flags)), pineapple::Exception);
 }
